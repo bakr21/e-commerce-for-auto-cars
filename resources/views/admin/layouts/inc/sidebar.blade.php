@@ -39,6 +39,24 @@
                     <a href="{{route('orders.index')}}"><img src="{{asset('admin/assets/img/icons/sales1.svg')}}" alt="img"><span>
                         Orders</span> </a>
                 </li>
+
+                <li class="submenu">
+                    <a href="javascript:void(0);"><img src="{{asset('admin/assets/img/icons/users1.svg')}}" alt="img"><span>
+                            People</span> <span class="menu-arrow"></span></a>
+                    <ul>
+                        <li><a href="customerlist.html">Customer List</a></li>
+                        <li><a href="addcustomer.html">Add Customer </a></li>
+                        <li><a href="supplierlist.html">Supplier List</a></li>
+                        <li><a href="addsupplier.html">Add Supplier </a></li>
+                        <li><a href="{{ route('users.index')}}" class="{{(Route::is('users.index')) || Route::is('users.edit') ? 'active' : '' }}">User List</a></li>
+                        <li><a href="{{ route('users.create')}}" class="{{(Route::is('users.create')) ? 'active' : '' }}">Add User</a></li>
+                    </ul>
+                </li>
+
+                <li class="{{(Route::is('pages.index')) || Route::is('pages.edit') || Route::is('pages.create') ? 'active' : '' }}">
+                    <a href="{{route('pages.index')}}"><i class="fa-regular fa-window-restore"></i><span>
+                        Pages</span> </a>
+                </li>
             </ul>
         </div>
     </div>

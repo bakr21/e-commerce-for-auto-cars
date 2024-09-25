@@ -34,6 +34,12 @@ class AddToCartController extends Controller
         if (Auth::check()) {
             $product = Product::find($product_id);
             if ($product) {
+                if ($qty > $product->qty) {
+                    return response()->json([
+                        'msg' => 'الكمية المطلوبة غير متوفرة. الكمية المتاحة: ' . $product->qty,
+                        'available_qty' => $product->qty
+                    ]);
+                }
                 $cartItem = Cart::where('product_id', $product_id)->where('user_id', $user_id)->first();
                 if ($cartItem) {
                     // Update quantity if product is already in the cart
@@ -49,8 +55,8 @@ class AddToCartController extends Controller
                         'user_id' => $user_id,
                         'product_id' => $product_id,
                         'qty' => $qty,
-                        'name' => $product->name, // إضافة اسم المنتج هنا
-                        'selling_price' => $product->selling_price // إضافة سعر المنتج هنا
+                        'name' => $product->name,
+                        'selling_price' => $product->selling_price
                     ]);
                     return response()->json([
                         'msg' => $product->name . " تمت إضافته إلى العربة بنجاح",
@@ -93,7 +99,7 @@ public function update(Request $request) {
 
             return response()->json([
                 'newTotalPrice' => $newTotalPrice,
-                'cartTotal' => $cartTotal + 10 // Assuming $10 is the shipping cost
+                'cartTotal' => $cartTotal + 10 
             ]);
         }
         

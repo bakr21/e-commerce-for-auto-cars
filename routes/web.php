@@ -12,7 +12,9 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\admin\BrandController;
 use App\Http\Controllers\admin\OrderController;
+use App\Http\Controllers\admin\PageController;
 use App\Http\Controllers\Admin\ShippingController;
+use App\Http\Controllers\admin\UserController;
 
 
 /*
@@ -34,6 +36,9 @@ Route::get('about', function () { return view('website.about'); })->name('websit
 Route::get('blog', function () { return view('website.blog.blog'); })->name('website.blog');
 Route::get('blogs', function () { return view('website.blog.index'); })->name('website.blog.index');
 
+Route::get('page/{slug}', [PageController::class, 'show'])->name('website.page');
+
+
 Route::get('shop/{categoryslug?}',[ShopController::class, 'index'])->name('website.shop');
 Route::get('contact', function () { return view('website.contact'); })->name('website.contact');
 Route::get('categories', [WebsiteController::class, 'getCategories'])->name('website.categories');
@@ -41,9 +46,6 @@ Route::get('category/{slug}', [WebsiteController::class, 'getCategoryBySlug'])->
 Route::get('/category/{category_slug}/{product_slug}', [websiteController::class, 'getProductBySlug'])->name('get_product_slug');
 Route::post('/product/add_to_cart', [AddToCartController::class, 'addToCart'])->name('product.addToCart');
 Route::get('/cart-count', [AddToCartController::class, 'cartCount'])->name('cart.count');
-
-
-
 
 
 // authenticate users & admin
@@ -73,6 +75,8 @@ Route::middleware(['auth', 'UserAcces:user'])->group(function () {
 
     Route::prefix('account')->group(function () {
         Route::get('profile', [AuthController::class,'profile'])->name('website.account.profile');
+        Route::post('update-profile', [AuthController::class,'updateprofile'])->name('website.account.updateprofile');
+        Route::post('update-address', [AuthController::class,'updateAddress'])->name('website.account.updateAddress');
 
         Route::get('orders', [AuthController::class,'orders'])->name('website.account.orders');
         Route::get('order-detail/{orderid}', [AuthController::class,'orderDetail'])->name('website.account.orderdetail');
@@ -97,16 +101,19 @@ Route::middleware(['auth', 'UserAcces:admin'])->group(function () {
         Route::resource('categories', CategoryController::class);
         Route::resource('brands', BrandController::class);
         Route::resource('shipping', ShippingController::class);
+        Route::resource('pages', PageController::class);
 
+        
         // orders routes admin
         Route::get('orders', [OrderController::class,'index'])->name('orders.index');
         Route::get('/order/{orderId}', [OrderController::class, 'detail'])->name('order.detail');
         Route::put('/order/change-status/{orderId}', [OrderController::class, 'updateStatus'])->name('order.updatestatus');
         Route::post('/order/send-email/{orderId}', [OrderController::class, 'sendInvoiceEmail'])->name('order.sendInvoiceEmail');
+        
+        // user routes admin
+        Route::resource('users', UserController::class);
 
-        // profile routes admin
         Route::get('profile', [AdminController::class, 'profilepage'])->name('admin.profile');
-
         Route::get('/get-slug', [AdminController::class, 'getSlug'])->name('getSlug');
 
     });

@@ -1,8 +1,7 @@
 @extends('website.layouts.master')
 @section('TitlePage' , 'Register ')
 @section('content')
-        <section class=" section-10">
-        <div class="container">
+        <div class="container w-50">
             <div class="login-form shadow-sm p-5 bg-body rounded">    
                 <form action="{{route('register.save')}}" method="POST">
                     @csrf
@@ -73,7 +72,6 @@
                 <div class="text-center mt-3">Already have an account? <a href="{{ route('login')}}" class="fw-bold hover-a">Login Now</a></div>
             </div>
         </div>
-    </section>
 
 @endsection
 {{-- <!DOCTYPE html>

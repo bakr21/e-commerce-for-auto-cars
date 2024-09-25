@@ -11,9 +11,9 @@
         </div>
         <div class="col-lg-6 text-right text-lg-right">
             <div class="d-inline-flex align-items-center">
-                <div class="btn-group">
-                    
-                    <button type="button" class="btn btn-sm btn-light dropdown-toggle " data-toggle="dropdown">{{auth()->user()->name ?? 'My Account'}}</button>
+                <div class="btn-group">    
+                    <button type="button" class="btn btn-sm btn-light dropdown-toggle " data-toggle="dropdown">{{ (auth()->check() ? 'Hello ' . auth()->user()->name : 'Sign in or Create an Account') }}
+                    </button>
                     
                     <div class="dropdown-menu dropdown-menu-right">
                         @if (Route::has('login'))
@@ -59,13 +59,13 @@
             </a>
         </div>
         <div class="col-lg-4 col-6 text-left">
-            <form action="">
+            <form action="{{ route('website.shop')}}" method="get">
                 <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search for products">
+                    <input value="{{ Request::get('search')}}" type="text" class="form-control" name="search" id="search" placeholder="Search for products">
                     <div class="input-group-append">
-                        <span class="input-group-text bg-transparent text-primary">
+                        <button  type="submit" class="input-group-text bg-transparent text-primary rounded-0">
                             <i class="fa fa-search"></i>
-                        </span>
+                        </button>
                     </div>
                 </div>
             </form>

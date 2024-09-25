@@ -111,7 +111,7 @@
                                 <a class="me-3" href="javascript:void(0);" onclick="deleteRecord({{$shippingCharge->id}})">
                                     <img src="{{asset('admin/assets/img/icons/delete.svg')}}" alt="img">
                                 </a>
-                                        </td>
+                            </td>
                         </tr>
                         @empty
                         <tr>
@@ -177,25 +177,32 @@
             }
         });
     }
-});
-    function deleteRecord(id){
-        var url = '{{ route('shipping.destroy','id')}}';
-        var newUrl = url.replace("id",id)
+    });
+    
+    function deleteRecord(id) {
+        if(confirm("Are you sure you want to delete this record?")) {
+            var url = '{{ route('shipping.destroy', 'id') }}';
+            var newUrl = url.replace("id", id);
 
-        $.ajax({
+            $.ajax({
                 headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 url: newUrl,
                 type: 'DELETE',
-                data: {},
                 dataType: 'json',
                 success: function(response) {
-                    if(response.status === true){
+                    if(response.status === true) {
                         window.location.href = "{{ route('shipping.create') }}";
                     }
+                },
+                error: function(xhr, status, error) {
+                    alert("An error occurred while deleting the record. Please try again.");
                 }
             });
-    };
+        }
+    }
+
 
 </script>
 

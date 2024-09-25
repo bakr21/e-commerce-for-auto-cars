@@ -45,13 +45,13 @@
                                 placeholder="+20 123 4567 8910" value="{{ (!empty($customerAddress)) ? $customerAddress->mobile : '' }}">
                             <p></p>
                         </div>
-                        <div class="col-md-6 form-group">
+                        <div class="col-md-12 form-group">
                             <label>Address Line 1</label>
                             <input class="form-control" name="address" id="address" type="text" 
                                 placeholder="123 Street" value="{{ (!empty($customerAddress)) ? $customerAddress->address : '' }}">
                                 <p></p>
                         </div>
-                        <div class="col-md-6 form-group">
+                        <div class="col-md-12 form-group">
                             <label>Address Line 2</label>
                             <input class="form-control" name="address2" id="address2" type="text" 
                                 placeholder="123 Street" value="{{ (!empty($customerAddress)) ? $customerAddress->address2 : '' }}">

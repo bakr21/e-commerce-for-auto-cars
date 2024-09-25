@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests\StoreRegisterRequest;
 use App\Http\Requests\StoreLoginRequest;
 use App\Mail\WelcomeEmail;
+use App\Models\Country;
+use App\Models\CustomerAddress;
 use App\Models\Order;
 use App\Models\Orderitem;
 use App\Models\Product;
@@ -80,7 +82,88 @@ class AuthController extends Controller
     }
 
     public function profile(){
-        return view('website.account.profile');
+        $userID = Auth::user()->id;
+
+        $user = User::where('id',$userID)->first();
+        $countries = Country::orderBy('name', 'ASC')->get();
+        $customerAddress = CustomerAddress::where('user_id',$user->id)->first();
+
+        return view('website.account.profile' , compact('user','countries' , 'customerAddress'));
+    }
+    
+    public function updateprofile(Request $request){
+        $userID = Auth::user()->id;
+        $validator = Validator::make($request->all(),[
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email,'.$userID.',id',
+            'phone' => 'required',
+            'address' => 'required',
+            'region' => 'required',
+        ]);
+
+        if ($validator->passes()) {
+            $user = User::find($userID);
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->phone = $request->phone;
+            $user->addres = $request->address;
+            $user->region = $request->region;
+            $user->save();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Profile updated successfully',
+            ]);
+
+        } else {
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors(),
+            ]);
+        }
+    }
+
+    public function updateAddress(Request $request){
+        $userID = Auth::user()->id;
+        $validator = Validator::make($request->all(), [
+            'billing_name' =>'required|string|min:5|max:255',
+            'billing_email' =>'required|string|email|max:255',
+            'billing_phone' =>'required',
+            'billing_address' =>'required|min:15',
+            'country_id' =>'required',
+            'city' =>'required',
+            'state' =>'required',
+            'zip' =>'required',
+        ]);
+
+        if ($validator->passes()) {
+            CustomerAddress::updateOrCreate(
+                ['user_id' => $userID],
+                [
+                    'user_id' => $userID,
+                    'name' => $request->billing_name,
+                    'email' => $request->billing_email,
+                    'mobile' => $request->billing_phone,
+                    'address' => $request->billing_address,
+                    'address2' => $request->address2,
+                    'country_id' => $request->country_id,
+                    'city' => $request->city,
+                    'state' => $request->state,
+                    'zip' => $request->zip,
+                ]
+            );
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Address updated successfully',
+            ]);
+
+        } else {
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors(),
+            ]);
+        }
     }
 
     public function orders(){

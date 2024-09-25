@@ -17,7 +17,7 @@
 
 <div class="container-fluid">
     <div class="row px-xl-5">
-        <div class="col-lg-3 col-md-4">
+        <div class="col-lg-3 col-md-3">
             @include('website.account.account-panel')
         </div>
         <div class="col-md-9">
@@ -81,7 +81,7 @@
                 <div class="card-footer p-3">
 
                     <!-- Heading -->
-                    <h6 class="mb-7 h5 mt-4">Order Items (3)</h6>
+                    <h6 class="mb-7 h5 mt-4">Order Items ({{ count($orderItems) }})</h6>
 
                     <!-- Divider -->
                     <hr class="my-3">
@@ -99,7 +99,7 @@
                                     @endphp
 
                                         @if($image && $image->image_path)
-                                            <a href="product.html"><img src="{{ Storage::url($image->image_path) }}" alt="{{$orderItem->name}}" class="img-fluid"></a>
+                                            <a href="{{ route('get_product_slug', [$orderItem->product->category->slug, $orderItem->product->slug]) }}"><img src="{{ Storage::url($image->image_path) }}" alt="{{$orderItem->name}}" class="img-fluid"></a>
                                         @else
                                             <img src="{{asset('admin/assets/img/product/noimage.png')}}" alt="{{ $orderItem->name }}"
                                             class="img-fluid image-Custom">
@@ -108,7 +108,7 @@
                                 <div class="col">
                                     <!-- Title -->
                                     <p class="mb-4 fs-sm fw-bold">
-                                        <a class="text-body" href="product.html">{{$orderItem->name}} x {{$orderItem->qty}}</a> <br>
+                                        <a class="text-body" href="{{ route('get_product_slug', [$orderItem->product->category->slug, $orderItem->product->slug]) }}">{{$orderItem->name}} x {{$orderItem->qty}}</a> <br>
                                         <span class="text-muted">{{$orderItem->total}} EGP</span>
                                     </p>
                                 </div>

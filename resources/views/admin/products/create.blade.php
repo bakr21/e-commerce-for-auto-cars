@@ -207,8 +207,7 @@
                     <div class="col-lg-12">
                         <div class="form-group">
                             <label>Preview Image</label>
-                            <div class="preview-images rounded d-inline" style="width: 200px;"></div> <!-- هنا سيتم عرض الصور -->
-
+                            <div class="preview-images rounded d-inline" ></div> <!-- هنا سيتم عرض الصور -->
                         </div>
                     </div>
                 </div>

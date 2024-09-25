@@ -35,15 +35,15 @@
                     <tbody class="align-middle">
                         @forelse ($cart_products as $product)
                         <tr>
-                            <td class="align-middle">
+                            <td class="align-baseline">
                                 @if($product->product->images->isNotEmpty())
-                                    <img src="{{ Storage::url($product->product->images->first()->image_path) }}" alt="{{ $product->product->name }}" style="width: 50px; height: 50px;">
+                                    <img src="{{ Storage::url($product->product->images->first()->image_path) }}" alt="{{ $product->product->name }}" class="pe-1" style="width: 50px; height: 50px;">
                                 @else
                                     <img src="{{ asset('admin/assets/img/product/noimage.png') }}" alt="No Image" style="width: 50px;">
                                 @endif
                                 {{ $product->product->name }}
                             </td>
-                            <td class="align-middle">${{ $product->product->selling_price }}</td>
+                            <td class="align-middle">{{ $product->product->selling_price }} EGP</td>
                             <td class="align-middle">
                                 <div class="input-group quantity mx-auto" style="width: 100px;">
                                     <div class="input-group-btn">
@@ -60,7 +60,7 @@
                                     </div>
                                 </div>
                             </td>
-                            <td class="align-middle">${{ $product->product->selling_price * $product->qty }}</td>
+                            <td class="align-middle">{{ $product->product->selling_price * $product->qty }} EGP</td>
                             <td class="align-middle">
                                 <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deletecartModal-{{ $product->id }}">
                                     <i class="fa fa-times"></i>
@@ -76,14 +76,14 @@
                 </table>
             </div>
             <div class="col-lg-4">
-                <form class="mb-30" action="">
+                {{-- <form class="mb-30" action="">
                     <div class="input-group">
                         <input type="text" class="form-control border-0 p-4" placeholder="Coupon Code">
                         <div class="input-group-append">
                             <button class="btn btn-primary">Apply Coupon</button>
                         </div>
                     </div>
-                </form>
+                </form> --}}
                 <h5 class="section-title position-relative text-uppercase mb-3">
                     <span class="bg-secondary pr-3">Cart Summary</span>
                 </h5>
@@ -93,16 +93,8 @@
                             <h6>Subtotal</h6>
                             <h6>{{ $total_price }} EGP</h6>
                         </div>
-                        {{-- <div class="d-flex justify-content-between">
-                            <h6 class="font-weight-medium">Shipping</h6>
-                            <h6 class="font-weight-medium">Shipping</h6>
-                        </div> --}}
                     </div>
                     <div class="pt-2">
-                        {{-- <div class="d-flex justify-content-between mt-2">
-                            <h5>Total</h5>
-                            <h5>${{ $total_price}}</h5>
-                        </div> --}}
                         <a href="{{route('checkout.index')}}" class="btn btn-block btn-primary font-weight-bold my-3 py-3" >Proceed To Checkout</a>
                     </div>
                 </div>

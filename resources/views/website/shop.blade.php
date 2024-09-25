@@ -22,11 +22,11 @@
     <div class="row px-xl-5">
         <!-- Shop Sidebar Start -->
             <!-- category Start -->
-        <h5 class="section-title position-relative text-uppercase mb-3">
-            <span class="bg-secondary pr-3">Filter by category</span>
-        </h5>
-        
-        <div class="col-lg-3 col-md-4">
+            
+            <div class="col-lg-3 col-md-4">
+            <h5 class="section-title position-relative text-uppercase mb-3">
+                <span class="bg-secondary pr-3">Filter by category</span>
+            </h5>
             <div class="bg-light p-3 mb-30">
                 @if ($categories->isNotEmpty())
                     <div class="accordion accordion-flush" id="accordionExample">
@@ -63,29 +63,6 @@
                 @endif
                 </div>        
                 <!-- category End -->
-            {{-- <!-- category Start -->
-            <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Filter by
-                    category</span></h5>
-            <div class="bg-light p-4 mb-30">
-                <form>
-                    @if ($categories->isNotEmpty())
-                        <div class="d-flex align-items-center justify-content-between mb-3">
-                            <label>All category</label>
-                            <span class="badge border font-weight-normal text-muted">{{ $categoryCount }}</span> <!-- Update count dynamically -->
-                        </div>
-                        @foreach ($categories as $category)
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" name="categories[]" value="{{ $category->id }}" class="custom-control-input" id="category-{{ $category->id }}" {{ ($categorySelected == $category->id) ? 'checked' : '' }}>
-                            <label class="custom-control-label" for="category-{{ $category->id }}" onclick="window.location.href='{{ route('website.shop',$category->slug) }}'" style="cursor: pointer;">
-                                {{ $category->name }}
-                            </label>
-                            <span class="badge border font-weight-normal text-muted">{{ $category->products_count }}</span>
-                        </div>
-                        @endforeach
-                    @endif
-                </form>
-            </div>
-            <!-- category End --> --}}
 
             <!-- brand Start -->
             @if ($brands->isNotEmpty())
@@ -166,12 +143,14 @@
                                 style="height: 250px; width: 100%;" class="img-fluid w-100">
                             @endif
                             <div class="product-action">
-                                {{-- <a class="btn btn-primary px-3" onclick="addtocart()" ><i class="fa fa-shopping-cart mr-1"></i> Add To Cart</a> --}}
-                                <a class="btn btn-outline-dark btn-square" onclick="addtocart()" h><i class="fa fa-shopping-cart"></i></a>
+                                @if($product->qty >= $product->minqty)
+                                <a class="btn btn-outline-dark btn-square" onclick="addtocart()" href="javascript:void(0);"><i class="fa fa-shopping-cart"></i></a>
                                 <input type="hidden" id="product_id" name="product_id" value="{{$product->id}}" />
+                                @else
+                                <a class="btn btn-outline-dark btn-square"><i class="fa-solid fa-store-slash"></i></a>
+                                @endif
                                 <a class="btn btn-outline-dark btn-square" onclick="addToWishlist({{$product->id}})" href="javascript:void(0);"><i class="far fa-heart"></i></a>
-                                <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                                <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
+                                <a class="btn btn-outline-dark btn-square" href="{{ route('get_product_slug', [$product->category->slug, $product->slug]) }}"><i class="fa-solid fa-eye"></i></a>
                             </div>
                         </div>
                         <div class="text-center py-4">
@@ -195,36 +174,7 @@
                 </div>
                 @endforeach
                 @endif
-                <div class="col-lg-4 col-md-6 col-sm-6 pb-1">
-                    <div class="product-item bg-light mb-4">
-                        <div class="product-img position-relative overflow-hidden">
-                            <img class="img-fluid w-100" src="img/product-2.jpg" alt="">
-                            <div class="product-action">
-                                <a class="btn btn-outline-dark btn-square" href=""><i
-                                        class="fa fa-shopping-cart"></i></a>
-                                <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
-                                <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                                <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
-                            </div>
-                        </div>
-                        <div class="text-center py-4">
-                            <a class="h6 text-decoration-none text-truncate" href="">Product Name Goes Here</a>
-                            <div class="d-flex align-items-center justify-content-center mt-2">
-                                <h5>$123.00</h5>
-                                <h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                            </div>
-                            <div class="d-flex align-items-center justify-content-center mb-1">
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star-half-alt text-primary mr-1"></small>
-                                <small>(99)</small>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
+                
                 <div class="col-12">
                     <nav>
                         <ul class="pagination justify-content-center">
@@ -314,11 +264,20 @@
         });
 
         var url ='{{ url()->current() }}?';
+        // price
         url += '&price_min='+slider.result.from+'&price_max='+slider.result.to;
+        
+        // brands
         if (brands.length > 0) {
             url+= '&brand='+brands.toString();
         }
 
+        var keyword = $('#search').val();
+        if (keyword.length > 0) {
+            url += '&search='+keyword;
+        }
+
+        // sort
         url += '&sort='+$("#sort").val();
         window.location.href = url;
 

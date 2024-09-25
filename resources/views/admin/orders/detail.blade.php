@@ -14,16 +14,16 @@
                 <h2>Order Detail : #{{$order->id}}</h2>
                 <ul>
                     <li>
-                        <a href="javascript:void(0);"><img src="assets/img/icons/edit.svg" alt="img"></a>
+                        <a data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img
+                                src="{{asset('admin/assets/img/icons/pdf.svg')}}" alt="img"></a>
                     </li>
                     <li>
-                        <a href="javascript:void(0);"><img src="assets/img/icons/pdf.svg" alt="img"></a>
+                        <a data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img
+                                src="{{asset('admin/assets/img/icons/excel.svg')}}" alt="img"></a>
                     </li>
                     <li>
-                        <a href="javascript:void(0);"><img src="assets/img/icons/excel.svg" alt="img"></a>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0);"><img src="assets/img/icons/printer.svg" alt="img"></a>
+                        <a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img
+                                src="{{asset('admin/assets/img/icons/printer.svg')}}" alt="img"></a>
                     </li>
                 </ul>
             </div>
@@ -185,7 +185,7 @@
                                 <label>Shipped time</label>
                             
                                     <div class="input-groupicon">
-                                        <input type="text" name="shipped_date" placeholder="DD-MM-YYYY" value="{{old($order->shipped_date)}}" class="datetimepicker">
+                                        <input type="text" name="shipped_date" placeholder="DD-MM-YYYY" value="{{ old('shipped_date', $order->shipped_date) }}" class="datetimepicker">
                                         <div class="addonset">
                                             <img src="{{asset('admin/assets/img/icons/calendars.svg')}}" alt="img">
                                         </div>

@@ -12,6 +12,7 @@ use App\Models\CustomerAddress;
 use App\Models\Order;
 use App\Http\Requests\website\StoreCheckoutRequest;
 use App\Models\OrderItem;
+use App\Models\Product;
 use App\Models\ShippingCharges;
 
 class CheckoutController extends Controller
@@ -156,9 +157,15 @@ class CheckoutController extends Controller
                 $orderItem->price = $item->selling_price;
                 $orderItem->total = $item->qty * $item->selling_price;
                 $orderItem->save();
+
+                
+                // step 6 => decrease product quantity
+                $product = Product::find($item->product_id);
+                $product->qty -= $item->qty;
+                $product->save(); 
             }
             // send Email notification
-            orderEmail($order->id ,'customer');
+            // orderEmail($order->id ,'customer');
 
             session()->flash('success', 'you haved completed order ');
 

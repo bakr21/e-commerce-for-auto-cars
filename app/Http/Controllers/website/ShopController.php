@@ -31,6 +31,10 @@ class ShopController extends Controller
             $data['brandsArray'] = explode(',',$request->get('brand'));
             $data['products'] = $data['products']->whereIn('brand_id',$data['brandsArray']);
         }
+
+        if (!empty($request->get('search'))) {
+            $data['products'] = $data['products']->where('name','like','%'.$request->get('search').'%');
+        }
         
         $data['price'] = 5000;  
         $priceMin = 0; 
@@ -59,7 +63,7 @@ class ShopController extends Controller
         } else {
             $data['products'] = $data['products']->orderby('id', 'DESC');                
         }
-        $data['products'] = $data['products']->paginate(1);
+        $data['products'] = $data['products']->paginate(10);
         $data['categorySelected'] = $categorySelected;
         $data['priceMin'] = $priceMin;
         $data['priceMax'] = $priceMax;

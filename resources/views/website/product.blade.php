@@ -69,7 +69,7 @@
                     <p class="mb-3">{{$product->short_description}}</p>
                     <div class="mb-3">
                         <strong class="text-dark mr-3">Available:</strong>                        
-                        @if($product->qty >= 5)
+                        @if($product->qty >= $product->minqty)
                             <small class="badge bg-primary p-2 text-muted">Available</small>
                         @else
                             <small class="badge bg-danger p-2">Unavailable Now</small>
@@ -78,7 +78,7 @@
                     @if(!Auth::check())
                         <p class="fw-bold">Please <a href="{{ route('login') }}">Login</a> before adding products to the cart </p>
                     @endif
-                    @if($product->qty >= 5)
+                    @if($product->qty >= $product->minqty)
                     <div class="d-flex align-items-center mb-4 pt-2">
                         <div class="input-group quantity mr-3" style="width: 130px;">
                             <div class="input-group-btn">

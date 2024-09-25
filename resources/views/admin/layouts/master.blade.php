@@ -12,6 +12,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
 		<title>@yield('TitlePage')</title>
         <script src="{{asset('admin/assets/js/jquery-3.6.0.min.js')}}"></script>
+        <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
 
         <link rel="shortcut icon" type="image/x-icon" href="{{asset('admin/assets/img/ZAKY_BAKR.png')}}">
         <link rel="stylesheet" href="{{asset('admin/assets/css/bootstrap.min.css')}}">
@@ -67,6 +68,9 @@
 
     <script src="{{asset('admin/assets/js/moment.min.js')}}"></script>
     <script src="{{asset('admin/assets/js/bootstrap-datetimepicker.min.js')}}"></script>
+
+    <script src="{{asset('admin/assets/plugins/summernote/summernote-bs4.min.js')}}"></script>
+
     
     <script src="{{asset('admin/assets/plugins/sweetalert/sweetalert2.all.min.js')}}"></script>
     <script src="{{asset('admin/assets/plugins/sweetalert/sweetalerts.min.js')}}"></script>

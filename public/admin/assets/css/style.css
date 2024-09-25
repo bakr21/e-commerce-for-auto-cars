@@ -8357,7 +8357,7 @@ span.select2-container.select2-container--default.select2-container--open {
 }
 
 .preview-images img {
-    max-width: 150px;
+    max-width: auto;
     height: 150px;
     margin-right: 5px;
     margin-bottom: 5px;
