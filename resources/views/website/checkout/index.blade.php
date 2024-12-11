@@ -201,7 +201,19 @@
                         <div class="form-group mb-4">
                             <div class="custom-control custom-radio">
                                 <input type="radio" class="custom-control-input" name="payment_method" value="card" id="payment_method_two" >
-                                <label class="custom-control-label" for="payment_method_two" data-bs-toggle="collapse"
+                                <label class="custom-control-label" for="payment_method_two">Pay using paypal</label>
+                            </div>
+                        </div>
+                        <div class="form-group mb-4">
+                            <div class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" name="payment_method" value="stripe" id="payment_method_third" >
+                                <label class="custom-control-label" for="payment_method_third">Pay using stripe</label>
+                            </div>
+                        </div>
+                        <div class="form-group mb-4">
+                            <div class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" name="payment_method" value="cardpaypaltest" id="payment_method_four" >
+                                <label class="custom-control-label" for="payment_method_four" data-bs-toggle="collapse"
                                     data-bs-target="#usingcard">Pay using card</label>
                             </div>
                         </div>
@@ -241,6 +253,9 @@
         event.preventDefault();
 
         $('button[type="submit"]').prop('disabled', true);
+
+        console.log($(this).serialize()); // تحقق من الحقول المرسلة
+
         
         $.ajax({
             headers: {
@@ -254,15 +269,49 @@
                 $('button[type="submit"]').prop('disabled', false);
                 
                 if (response.status == false){
-                    var errors = response.errors;
-                    handleErrors(errors);
-                } else {
-                    // عملية الحفظ ناجحة، إعادة التوجيه إلى صفحة الشكر
-                    window.location.href = "{{ url('/thankyou') }}/" + response.orderId;
+                    // إذا كانت هناك أخطاء تحقق أو السلة فارغة
+                    if (response.errors) {
+                        handleErrors(response.errors);
+                    } else {
+                        Swal.fire({
+                            title: 'Error!',
+                            text:  response.details || response.message || 'Something went wrong.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                } else if (response.payment_method === 'cod') {
+                    // إذا كانت طريقة الدفع عند التسليم
+                    Swal.fire({
+                        title: 'Order Placed!',
+                        text: 'Your order has been placed successfully.',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        // إعادة التوجيه إلى صفحة الشكر
+                        window.location.href = "{{ url('/thankyou') }}/" + response.orderId;
+                    });
+                } else if (response.payment_method === 'stripe' || response.payment_method === 'card') {
+
+                    window.location.href = response.redirect_url;
                 }
+            },
+            error: function(xhr) {
+                // معالجة الأخطاء غير المتوقعة
+                $('button[type="submit"]').prop('disabled', false);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Something went wrong. Please try again later.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
             }
         });
     });
+
+
+
+
 
     $('#country').change(function(){
     $.ajax({
@@ -315,7 +364,7 @@
 
         // Function to toggle collapse based on the selected radio button
         function toggleCollapse() {
-            if (document.getElementById('payment_method_two').checked) {
+            if (document.getElementById('payment_method_four').checked) {
                 usingCardCollapse.show();
             } else {
                 usingCardCollapse.hide();

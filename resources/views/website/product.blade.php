@@ -1,5 +1,5 @@
 @extends('website.layouts.master')
-@section('TitlePage' , 'Home')
+@section('TitlePage' , $product->name)
 @section('content')
     <!-- Breadcrumb Start -->
     <div class="container-fluid">
@@ -93,7 +93,6 @@
                                 </button>
                             </div>
                         </div>
-
                         <a class="btn btn-primary px-3" onclick="addtocart()" ><i class="fa fa-shopping-cart mr-1"></i> Add To Cart</a>
                         <input type="hidden" id="product_id" name="product_id" value="{{$product->id}}" />
                     </div>
@@ -237,7 +236,7 @@
             <div class="col">
                 <div class="owl-carousel related-carousel">
                     @foreach($trendingProducts as $Product)
-                    <div class="product-item bg-light">
+                    <div class="product-item bg-light item">
                         <div class="product-img position-relative overflow-hidden">
                             @php
                             $image = $Product->images->first();
@@ -248,9 +247,16 @@
                                 <img src="{{ asset('admin/assets/img/product/noimage.png') }}" alt="{{ $Product->name }}" style="height: 250px; width: 100%;" class="img-fluid w-100">
                             @endif
                             <div class="product-action">
-                                <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
+                                @if($product->qty >= $product->minqty)
+                                <a class="btn btn-outline-dark btn-square add-to-cart" 
+                                data-product-id="{{ $product->id }}" 
+                                href="javascript:void(0);">
+                                <i class="fa fa-cart-plus"></i></a> 
+                                @else
+                                <a class="btn btn-outline-dark btn-square"><i class="fa-solid fa-store-slash"></i></a>
+                                @endif
                                 <a class="btn btn-outline-dark btn-square" onclick="addToWishlist({{$product->id}})" href="javascript:void(0);"><i class="far fa-heart"></i></a>
-                                <a class="btn btn-outline-dark btn-square" href="{{ route('get_product_slug', [$Product->category->slug, $Product->slug]) }}"><i class="fa-solid fa-eye"></i></a>
+                                <a class="btn btn-outline-dark btn-square" href="{{ route('get_product_slug', [$product->category->slug, $product->slug]) }}"><i class="fa-solid fa-eye"></i></a>
                             </div>
                         </div>
                         <div class="text-center py-4">
@@ -297,10 +303,13 @@
                     quantity: qty
                 },
                 success: function(response) {
-                    Swal.fire(response.msg);
+                Swal.fire({
+                    icon: response.icon, // تحديد نوع الأيقونة (success, error, warning, info, question)
+                    title: response.msg, // الرسالة التي يتم عرضها
+                });
                 },
                 error: function(xhr, status, error) {
-                    console.error('Error: ' + error);
+                    console.error('Error: ' + error);  // في حالة حدوث خطأ
                     console.error(xhr.responseText);
                 }
             });

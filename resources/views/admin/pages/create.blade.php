@@ -69,13 +69,17 @@
             event.preventDefault();
             $('button[type="submit"]').prop('disabled', true);
 
+            var formData = new FormData(this);
+
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 url: '{{ route('pages.store') }}',
                 type: 'POST',
-                data: $(this).serialize(),
+                data: formData,
+                contentType: false,  // ضروري لتعطيل ضبط نوع البيانات تلقائيًا
+                processData: false,  // ضروري لتعطيل معالجة البيانات قبل إرسالها
                 dataType: 'json',
                 success: function(response) {
                     $('button[type="submit"]').prop('disabled', false);

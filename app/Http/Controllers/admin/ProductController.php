@@ -119,7 +119,7 @@ class ProductController extends Controller
 
     $product->save();
 
-    // التعامل مع الصور الجديدة
+    
     if ($request->hasFile('images')) {
         foreach ($request->file('images') as $image) {
             $path = $image->store('public/products');

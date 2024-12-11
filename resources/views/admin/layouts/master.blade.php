@@ -10,7 +10,7 @@
 		<meta name="author" content="Dreamguys - Bootstrap Admin Template">
 		<meta name="robots" content="noindex, nofollow">
         <meta name="csrf-token" content="{{ csrf_token() }}">
-		<title>@yield('TitlePage')</title>
+		<title>@yield('TitlePage') - Dashboard</title>
         <script src="{{asset('admin/assets/js/jquery-3.6.0.min.js')}}"></script>
         <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
 
@@ -28,9 +28,9 @@
 </head>
 
 <body>
-    {{-- <div id="global-loader">
+    <div id="global-loader">
         <div class="whirly-loader"> </div>
-    </div> --}}
+    </div>
 
     <div class="main-wrapper">
 

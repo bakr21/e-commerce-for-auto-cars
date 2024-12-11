@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\Page;
 use App\Models\Product;
+use App\Models\SiteSetting;
 use App\Models\Wishlist;
 use Illuminate\Support\Facades\Auth;
 

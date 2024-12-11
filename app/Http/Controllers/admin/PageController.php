@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Page;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
+
 
 class PageController extends Controller
 {
@@ -44,21 +46,16 @@ class PageController extends Controller
                 'errors' => $validator->errors(),
             ]);
         }
-    
-        $imageName = null;
-    
-        if ($request->hasFile('image')) {
-            // إنشاء اسم فريد للصورة
-            $imageName = time() . '.' . $request->image->extension();
-            // تخزين الصورة في المجلد المخصص
-            $request->image->move(public_path('images'), $imageName);
-        }
         
         $page = new Page;
         $page->name = $request->name;
         $page->slug = $request->slug;
         $page->content = $request->summernote; // Assuming summernote content is passed from the request
-        $page->image = $imageName; // Store the image path in the database
+        if ($request->hasFile('image')) {
+            $imageName = time() . '.' . $request->image->extension();
+            $path = $request->image->storeAs('pages', $imageName, 'public');
+            $page->image = $path;
+        }
         $page->save();
     
         
@@ -76,8 +73,8 @@ class PageController extends Controller
      */
     public function show(string $slug)
     {
-    $page = Page::where('slug', $slug)->firstOrFail();
-    return view('website.page', compact('page'));
+        $page = Page::where('slug', $slug)->firstOrFail();
+        return view('website.page', compact('page'));
     }
 
 
@@ -99,6 +96,7 @@ class PageController extends Controller
     /**
      * Update the specified resource in storage.
      */
+
     public function update(Request $request, string $id)
     {
         $page = Page::find($id);
@@ -109,28 +107,39 @@ class PageController extends Controller
         }
 
         $validator = Validator::make($request->all(),[
-            'name' => 'required',
-            'slug' => 'required|unique:pages,slug,' . $id,
+            'name' => 'required|string|max:255',
+            'slug' => 'required|string|unique:pages,slug,' . $id . ',id',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        if($validator->passes()){
-            $page->name = $request->name;
-            $page->slug = $request->slug;
-            $page->content = $request->summernote;
-            $page->save();
-
-            session()->flash('success', 'page updated successfully');
-            return response()->json([
-                'status' => true,
-            ]);
-
-        } else {
+        if($validator->fails()){
             return response()->json([
                 'status' => false,
                 'errors' => $validator->errors(),
             ]);
         }
+
+        // Update page details
+        $page->name = $request->name;
+        $page->slug = $request->slug;
+        $page->content = $request->summernote;
+
+        if ($request->hasFile('image')) {
+            if ($page->image) {
+                Storage::disk('public')->delete($page->image);
+            }
+
+            $imageName = time() . '.' . $request->image->extension();
+            $path = $request->image->storeAs('pages', $imageName, 'public');
+            $page->image = $path;
+        }
+
+        $page->save();
+
+        session()->flash('success', 'Page updated successfully');
+        return response()->json(['status' => true]);
     }
+
 
     /**
      * Remove the specified resource from storage.
@@ -144,6 +153,9 @@ class PageController extends Controller
             return redirect()->route('pages.index');
         }
 
+        if ($page->image) {
+            Storage::disk('public')->delete($page->image);
+        }
         $page->delete();
 
         session()->flash('success', 'page deleted successfully');

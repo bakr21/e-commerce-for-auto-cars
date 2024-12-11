@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\SiteSetting;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\View;
@@ -32,5 +33,9 @@ class AppServiceProvider extends ServiceProvider
             $view->with('wishlistCount', $wishlistCount);
         });
         Paginator::useBootstrap();
+
+        View::composer('*', function ($view) {
+            $view->with('site_settings', SiteSetting::first());
+        });
     }
 }

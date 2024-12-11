@@ -7,22 +7,26 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
             margin: 0;
-            padding: 20px;
-            color: #333;
+            padding: 0;
         }
         .container {
-            max-width: 800px;
-            margin: auto;
+            max-width: 600px;
             padding: 20px;
             border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #f9f9f9;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
         .header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
+            background-color: #FFD333;
+            color: #ffffff;
+            padding: 20px;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            text-align: center;
         }
         .header img {
             max-width: 100px;
@@ -30,10 +34,11 @@
         }
         .header h1 {
             margin: 0;
-            color: #FFD333;
+            font-size: 24px;
         }
         .order-details {
             margin-bottom: 20px;
+            padding: 20px;
         }
         .order-details p {
             margin: 5px 0;
@@ -49,7 +54,7 @@
             text-align: left;
         }
         .table th {
-            background-color: #e6b400;
+            background-color: #FFD333;
             color: white;
         }
         .total {
@@ -67,12 +72,12 @@
     <div class="container">
         @if ($mailData['userType'] == 'customer')
         <div class="header">
-            <img src="{{asset('admin/assets/img/ZAKY_BAKR_LOGO3.svg')}}" alt="">
+            <img src="{{ asset('path_to_your_logo/logo.png') }}" alt="Website Logo" class="logo">
             <h1>Invoice for Your Order</h1>
         </div>
         @else 
         <div class="header">
-            <img src="{{asset('admin/assets/img/ZAKY_BAKR_LOGO3.svg')}}" alt="">
+            <img src="{{ asset('path_to_your_logo/logo.png') }}" alt="Website Logo" class="logo">
             <h1>You have received an order <strong>{{$mailData['order']->id}}</strong></h1>
         </div>
         @endif

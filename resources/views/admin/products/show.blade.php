@@ -1,5 +1,5 @@
 @extends('admin.layouts.master')
-@section('TitlePage', 'catdasn')
+@section('TitlePage', $product->name)
 @section('content')
 <div class="content">
     <div class="page-header">

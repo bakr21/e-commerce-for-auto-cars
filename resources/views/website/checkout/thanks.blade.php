@@ -1,12 +1,12 @@
 @extends('website.layouts.master')
-@section('TitlePage' , 'thank you')
+@section('TitlePage' , 'Thank you')
 @section('content')
     <div class="container">
         <div class="row justify-content-center mt-5">
             <div class="col-md-8 text-center">
                 <h1>Thank You for Your Order!</h1>
                 <p class="lead">We appreciate your business. Your order details are as follows:</p>
-                <div class="card mt-4">
+                <div class="bg-light mt-4 border border-opacity-10">
                     <div class="card-body">
                         <h5 class="card-title">Order #{{ $id }}</h5>
                         <p class="card-text">Notes: The order will be received after 4 days.</p>

@@ -1,5 +1,5 @@
 @extends('admin.layouts.master')
-@section('TitlePage', 'Edit product '.$product->name.' - dashboard')
+@section('TitlePage', 'Edit '.$product->name.'')
 @section('content')
 <div class="content">
     <div class="page-header">

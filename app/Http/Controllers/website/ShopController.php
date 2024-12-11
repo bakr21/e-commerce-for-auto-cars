@@ -13,7 +13,7 @@ class ShopController extends Controller
     public function index(Request $request, $catrgorySlug = null ){
         $categorySelected = '';
 
-        $data['categories'] =  Category::orderby('name', 'ASC')->withCount('products')->where('is_showing',1)->get();
+        $data['categories'] =  Category::orderby('name', 'ASC')->withCount(['activeProducts as products_count'])->where('is_showing',1)->get();
         $data['brands'] =  Brand::orderby('name', 'ASC')->withCount('products')->where('status',1)->get();
         $data['products'] = Product::where('status',1)->with('images');
         $data['brandsArray'] = [];

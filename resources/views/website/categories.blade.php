@@ -9,7 +9,7 @@
         <div class="col-lg-4 col-md-4 col-sm-6 pb-1">
             <a class="text-decoration-none" href="{{route('website.category_slug' , $category->slug)}}">
                 <div class="cat-item d-flex align-items-center mb-4">
-                    <div class="overflow-hidden align-content-center" style="width: 650px; height: 250px;">
+                    <div class="overflow-hidden align-content-center">
                         <img class="img-fluid" src="{{ Storage::url($category->image) }}" alt="{{ $category->image }}" style="width: 200px; height: 200px;">
                     </div>
                     <div class="flex-fill pl-3">

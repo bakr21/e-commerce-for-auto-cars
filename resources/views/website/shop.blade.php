@@ -103,8 +103,8 @@
                 <div class="col-12 pb-1">
                     <div class="d-flex align-items-center justify-content-between mb-4">
                         <div>
+                            <a class="btn btn-sm btn-light mr-2" href="{{route('website.shop')}}"><i class="fa-solid fa-filter-circle-xmark"></i></a>
                             <button class="btn btn-sm btn-light"><i class="fa fa-th-large"></i></button>
-                            {{-- <button class="btn btn-sm btn-light ml-2"><i class="fa fa-bars"></i></button> --}}
                         </div>
                         <div class="ml-2">
                             <div class="btn-group">
@@ -144,8 +144,10 @@
                             @endif
                             <div class="product-action">
                                 @if($product->qty >= $product->minqty)
-                                <a class="btn btn-outline-dark btn-square" onclick="addtocart()" href="javascript:void(0);"><i class="fa fa-shopping-cart"></i></a>
-                                <input type="hidden" id="product_id" name="product_id" value="{{$product->id}}" />
+                                <a class="btn btn-outline-dark btn-square add-to-cart" 
+                                data-product-id="{{ $product->id }}" 
+                                href="javascript:void(0);">
+                                <i class="fa fa-cart-plus"></i></a> 
                                 @else
                                 <a class="btn btn-outline-dark btn-square"><i class="fa-solid fa-store-slash"></i></a>
                                 @endif
@@ -201,29 +203,7 @@
         }
     });
 
-    function addtocart() {
-        var product_id = $('#product_id').val();
-        var qty = $('#qty_value').val();
 
-        console.log('Product ID: ' + product_id + ' | Quantity: ' + qty);
-
-        $.ajax({
-            method: 'POST',
-            url: "{{ route('product.addToCart') }}",
-            data: {
-                _token: "{{ csrf_token() }}",
-                product_id: product_id,
-                quantity: qty
-            },
-            success: function(response) {
-                Swal.fire(response.msg);
-            },
-            error: function(xhr, status, error) {
-                console.error('Error: ' + error);
-                console.error(xhr.responseText);
-            }
-        });
-    }
 
     
     rangeSlider = $(".js-range-slider").ionRangeSlider({

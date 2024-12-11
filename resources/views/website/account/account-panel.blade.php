@@ -12,7 +12,7 @@
             aria-expanded="false"><i class="fas fa-heart"></i> Wishlist</a>
     </li>
     <li class="nav-item nav-link bg-dark p-3 mb-3">
-        <a href="change-password.php" class="text-decoration-none p-2" role="tab" aria-controls="tab-register"
+        <a href="{{ route('website.account.change-password')}}" class="text-decoration-none p-2 {{(Route::is('website.account.change-password')) ? 'text-white' : '' }}" role="tab" aria-controls="tab-register"
             aria-expanded="false"><i class="fas fa-lock"></i> Change Password</a>
     </li>
     <li class="nav-item nav-link bg-dark p-3 mb-3">

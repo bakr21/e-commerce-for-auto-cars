@@ -4,7 +4,7 @@
             <div class="d-inline-flex align-items-center h-100">
                 <a class="text-body mr-3" href="{{route('website.about')}}">About</a>
                 <a class="text-body mr-3" href="{{route('website.blog')}}">Blog</a>
-                <a class="text-body mr-3" href="{{route('website.contact')}}">Contact</a>
+                <a class="text-body mr-3" href="{{ url('page/contact-us') }}">Contact Us</a>
                 <a class="text-body mr-3" href="">Help</a>
                 <a class="text-body mr-3" href="">FAQs</a>
             </div>
@@ -12,7 +12,7 @@
         <div class="col-lg-6 text-right text-lg-right">
             <div class="d-inline-flex align-items-center">
                 <div class="btn-group">    
-                    <button type="button" class="btn btn-sm btn-light dropdown-toggle " data-toggle="dropdown">{{ (auth()->check() ? 'Hello ' . auth()->user()->name : 'Sign in or Create an Account') }}
+                    <button type="button" class="btn btn-sm btn-light dropdown-toggle " data-toggle="dropdown">{{ (auth()->check() ? 'Welcome back ' . auth()->user()->name : 'Sign in or Create an Account') }}
                     </button>
                     
                     <div class="dropdown-menu dropdown-menu-right">
@@ -53,11 +53,28 @@
     </div>
     <div class="row align-items-center bg-light py-3 px-xl-5 d-none d-lg-flex">
         <div class="col-lg-4">
-            <a href="" class="text-decoration-none">
-                <span class="h1 text-uppercase text-primary bg-dark px-2">Zaky</span>
-                <span class="h1 text-uppercase text-dark bg-primary px-2 ml-n1">Bakr</span>
+            <a href="#" class="text-decoration-none">
+                @php
+                    $siteName = $site_settings->site_name ; // استرجاع اسم الموقع
+                    $nameParts = explode(' ', $siteName); // تقسيم الاسم بناءً على المسافة
+                @endphp
+        
+                @if(count($nameParts) == 1)
+                    <!-- إذا كانت كلمة واحدة -->
+                    <span class="h1 text-uppercase text-primary bg-dark px-2">{{ $nameParts[0] }}</span>
+                @elseif(count($nameParts) == 2)
+                    <!-- إذا كانت كلمتين -->
+                    <span class="h1 text-uppercase text-primary bg-dark px-2">{{ $nameParts[0] }}</span>
+                    <span class="h1 text-uppercase text-dark bg-primary px-2 ml-n1">{{ $nameParts[1] }}</span>
+                @else
+                    <!-- إذا كانت أكثر من كلمتين -->
+                    <span class="h1 text-uppercase text-primary bg-dark px-2">{{ $nameParts[0] }}</span>
+                    <span class="h1 text-uppercase text-dark bg-primary px-2 ml-n1">{{ $nameParts[1] }}</span>
+                    <span class="h1 text-uppercase text-primary bg-dark px-2">{{ implode(' ', array_slice($nameParts, 2)) }}</span>
+                @endif
             </a>
         </div>
+        
         <div class="col-lg-4 col-6 text-left">
             <form action="{{ route('website.shop')}}" method="get">
                 <div class="input-group">
@@ -72,7 +89,7 @@
         </div>
         <div class="col-lg-4 col-6 text-right">
             <p class="m-0">Customer Service</p>
-            <h5 class="m-0">+012 345 6789</h5>
+            <h5 class="m-0">{{$site_settings->hotline}}</h5>
         </div>
     </div>
 </div>

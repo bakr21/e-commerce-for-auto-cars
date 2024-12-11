@@ -64,9 +64,14 @@
     $('.related-carousel').owlCarousel({
         loop: true,
         margin: 29,
-        nav: false,
         autoplay: true,
+        slideSpeed : 1000,
+        paginationSpeed : 2000,
         smartSpeed: 1000,
+        navigation : true,
+        navigationText : ["prev","next"],
+        pagination : true,
+        paginationNumbers: true,
         responsive: {
             0:{
                 items:1
@@ -78,7 +83,7 @@
                 items:3
             },
             992:{
-                items:4
+                items:5
             }
         }
     });

@@ -153,7 +153,6 @@
             error: function(xhr, status, error) {
                 $('button[type="submit"]').prop('disabled', false);
                 // يمكن معالجة الأخطاء الأخرى هنا
-                alert("حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.");
             }
         });
     });

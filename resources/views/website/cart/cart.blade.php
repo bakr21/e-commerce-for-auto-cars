@@ -47,20 +47,21 @@
                             <td class="align-middle">
                                 <div class="input-group quantity mx-auto" style="width: 100px;">
                                     <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-minus" >
+                                        <button class="btn btn-sm btn-primary btn-minus">
                                             <i class="fa fa-minus"></i>
                                         </button>
                                     </div>
-                                    <input id="form1" min="0" name="qty" type="text" class="form-control form-control-sm bg-secondary border-0 text-center qty_{{$product->id}}" 
+                                    <input id="qty_{{ $product->product_id ?? $product->id }}" min="0" name="qty[{{ $product->product_id ?? $product->id }}]" type="text" class="form-control form-control-sm bg-secondary border-0 text-center"
                                     value="{{ $product->qty }}">
                                     <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-plus" >
+                                        <button class="btn btn-sm btn-primary btn-plus">
                                             <i class="fa fa-plus"></i>
                                         </button>
                                     </div>
                                 </div>
                             </td>
-                            <td class="align-middle">{{ $product->product->selling_price * $product->qty }} EGP</td>
+                            <td class="align-middle" id="total-price-{{ $product->id }}">{{ $product->product->selling_price * $product->qty }} EGP</td>
+
                             <td class="align-middle">
                                 <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deletecartModal-{{ $product->id }}">
                                     <i class="fa fa-times"></i>
@@ -117,7 +118,7 @@
                     @method('DELETE')
                     @csrf
                     <div class="modal-body">
-                        Delete {{ $product->Product->name }} from your Cart?
+                        Delete {{ $product->product->name }} from your Cart?
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -128,38 +129,10 @@
         </div>
     </div>
     @endforeach
-    
-<script>
-    $(document).ready(function() {
-        $('.btn-plus, .btn-minus').on('click', function() {
-            var $btn = $(this);
-            var $input = $btn.closest('.input-group').find('input');
-            var currentValue = parseInt($input.val());
-            var newValue = $btn.hasClass('btn-plus') ? currentValue : currentValue ;
-            newValue = newValue < 0 ? 0 : newValue;
-            $input.val(newValue);
 
-            var productId = $input.attr('class').split('_')[1];
-            var newQty = newValue;
-
-            // AJAX request to update cart quantity
-            $.ajax({
-                url: '{{route('cart.update')}}', 
-                type: 'POST',
-                data: {
-                    id: productId,
-                    qty: newQty,
-                    _token: '{{ csrf_token() }}'
-                },
-                success: function(response) {
-                    // Update the total price based on the new quantity
-                    $('#total-price-' + productId).text('$' + response.newTotalPrice);
-                    $('#cart-summary').text('$' + response.cartTotal);
-                }
-            });
-        });
-    });
-</script>
-
-    
+    @section('customjs')
+    <script>
+        
+    </script>
+    @endsection
 @endsection

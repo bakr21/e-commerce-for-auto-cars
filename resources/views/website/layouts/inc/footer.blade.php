@@ -2,10 +2,10 @@
     <div class="row px-xl-5 pt-5">
         <div class="col-lg-4 col-md-12 mb-5 pr-3 pr-xl-5">
             <h5 class="text-secondary text-uppercase mb-4">Get In Touch</h5>
-            <p class="mb-4">No dolore ipsum accusam no lorem. Invidunt sed clita kasd clita et et dolor sed dolor. Rebum tempor no vero est magna amet no</p>
-            <p class="mb-2"><i class="fa fa-map-marker-alt text-primary mr-3"></i>123 Street, New York, USA</p>
-            <p class="mb-2"><i class="fa fa-envelope text-primary mr-3"></i>info@example.com</p>
-            <p class="mb-0"><i class="fa fa-phone-alt text-primary mr-3"></i>+012 345 67890</p>
+            <p class="mb-4">{{$site_settings->company_description}}</p>
+            <p class="mb-2"><i class="fa fa-map-marker-alt text-primary mr-3"></i>{{$site_settings->address}}</p>
+            <p class="mb-2"><i class="fa fa-envelope text-primary mr-3"></i>{{$site_settings->email}}</p>
+            <p class="mb-0"><i class="fa fa-phone-alt text-primary mr-3"></i>{{$site_settings->phone_number}}</p>
         </div>
         <div class="col-lg-8 col-md-12">
             <div class="row">
@@ -33,7 +33,7 @@
                 </div>
                 <div class="col-md-5 mb-5">
                     <h5 class="text-secondary text-uppercase mb-4">Newsletter</h5>
-                    <p>Duo stet tempor ipsum sit amet magna ipsum tempor est</p>
+                    <p>Be the first to know about our new products and special services and receive the latest exclusive offers and discounts. Subscribe to our mailing list now!</p>
                     <form action="">
                         <div class="input-group">
                             <input type="text" class="form-control" placeholder="Your Email Address">
@@ -44,9 +44,21 @@
                     </form>
                     <h6 class="text-secondary text-uppercase mt-4 mb-3">Follow Us</h6>
                     <div class="d-flex">
-                        <a class="btn btn-primary btn-square mr-2" href="#"><i class="fab fa-twitter"></i></a>
-                        <a class="btn btn-primary btn-square mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a class="btn btn-primary btn-square mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
+                        @if (!empty($site_settings->twitter_link))
+                            <a class="btn btn-primary btn-square mr-2" href="{{ $site_settings->twitter_link }}" target="_blank">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                        @endif
+                        @if (!empty($site_settings->facebook_link))
+                            <a class="btn btn-primary btn-square mr-2" href="{{ $site_settings->facebook_link }}" target="_blank">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                        @endif
+                        @if (!empty($site_settings->linkedin_link))
+                            <a class="btn btn-primary btn-square mr-2" href="{{ $site_settings->linkedin_link }}" target="_blank">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                        @endif
                         <a class="btn btn-primary btn-square" href="#"><i class="fab fa-instagram"></i></a>
                     </div>
                 </div>

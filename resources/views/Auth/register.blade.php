@@ -1,7 +1,7 @@
 @extends('website.layouts.master')
 @section('TitlePage' , 'Register ')
 @section('content')
-        <div class="container w-50">
+        <div class="container">
             <div class="login-form shadow-sm p-5 bg-body rounded">    
                 <form action="{{route('register.save')}}" method="POST">
                     @csrf

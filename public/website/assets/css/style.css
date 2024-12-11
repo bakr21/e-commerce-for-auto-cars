@@ -9731,3 +9731,11 @@ a.text-dark:hover, a.text-dark:focus {
     transform: translateY(-15px);
   }
 }
+.swal2-confirm {
+  background-color: #ffc107 !important; /* لون جديد */
+  color: white !important;
+}
+.swal2-cancel {
+  background-color: #f44336 !important;
+  color: white !important;
+}

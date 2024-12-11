@@ -10,20 +10,22 @@
     </div>
 
     <div class="card">
-        <form action="" method="post" id="pageForm" name="pageForm">
+        <form action="{{ route('pages.update', $page->id) }}" method="post" id="pageForm" name="pageForm" enctype="multipart/form-data">
+            @csrf
+            @method('PUT')
             <div class="card-body">
                 <div class="row">
                     <div class="col-lg-6 col-sm-6 col-12">
                         <div class="form-group">
                             <label>Name</label>
-                            <input type="text" value="{{ $page->name}}" name="name" id="name" class="form-control" placeholder="name">
+                            <input type="text" value="{{ $page->name }}" name="name" id="name" class="form-control" placeholder="name">
                             <p></p>
                         </div>
                     </div>
                     <div class="col-lg-6 col-sm-6 col-12">
                         <div class="form-group">
                             <label>Slug</label>
-                            <input readonly type="text" value="{{ $page->slug}}" name="slug" id="slug" class="form-control" placeholder="slug">
+                            <input type="text" value="{{ $page->slug }}" name="slug" id="slug" class="form-control" placeholder="slug">
                             <p></p>
                         </div>
                     </div>
@@ -33,42 +35,57 @@
                             <textarea id="summernote" name="summernote">{!! $page->content !!}</textarea>
                         </div>
                     </div>
-                    <div class="col-lg-12">
+                    <div class="col-lg-6">
                         <div class="form-group">
-                            <label> User Image</label>
+                            <label>Page Image</label>
                             <div class="image-upload">
-                                <input type="file" name="image" id="image">
+                                <input type="file" name="image" id="images" class="form-control">
                                 <div class="image-uploads">
-                                    <img src="{{asset('admin/assets/img/icons/upload.svg')}}" alt="img">
+                                    <img src="{{ asset('admin/assets/img/icons/upload.svg') }}" alt="img">
                                     <h4>Drag and drop a file to upload</h4>
                                 </div>
                             </div>
                             <p></p>
                         </div>
                     </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label>Preview Image</label>
+                            <div class="preview-images rounded d-inline">
+                                @if($page->image)
+                                    <img src="{{ asset('storage/' . $page->image) }}" alt="Page Image" class="img-thumbnail">
+                                @endif
+                            </div>
+                        </div>
+                    </div>
                     <div class="col-lg-12">
                         <button type="submit" class="btn btn-submit me-2">Update</button>
-                        <a href="{{ route('pages.index')}}" class="btn btn-cancel">Cancel</a>
+                        <a href="{{ route('pages.index') }}" class="btn btn-cancel">Cancel</a>
                     </div>
                 </div>
             </div>
         </form>
     </div>
-
 </div>
+
 <script>
     $(document).ready(function() {
         $("#pageForm").submit(function(event) {
             event.preventDefault();
             $('button[type="submit"]').prop('disabled', true);
 
+            var formData = new FormData(this);
+            formData.append('_method', 'PUT');
+
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
-                url: '{{ route('pages.update',$page->id) }}',
-                type: 'PUT',
-                data: $(this).serialize(),
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
                 dataType: 'json',
                 success: function(response) {
                     $('button[type="submit"]').prop('disabled', false);
@@ -87,42 +104,42 @@
         });
 
         function handleErrors(errors) {
-                var fields = ['name', 'slug', 'summernote']; 
+            var fields = ['name', 'slug', 'summernote']; 
 
-                fields.forEach(function(field) {
-                    var input = $("#" + field);
-                    var errorFeedback = input.siblings('p');
-                    if (errors[field]) {
-                        input.addClass('is-invalid');
-                        errorFeedback
-                        .addClass('invalid-feedback')
-                        .html(errors[field][0]);
-                    } else {
-                        input.removeClass('is-invalid');
-                        errorFeedback
-                        .removeClass('invalid-feedback')
-                        .html('');
-                    }
-                });
-            }
-        });
-
-        // for slug generation 
-        $("#name").change(function(){
-            var element = $(this);
-            $("button[type=submit]").prop('disabled', true);
-            $.ajax({
-                url: '{{ route("getSlug") }}',
-                type: 'get',
-                data: { title: element.val() },
-                dataType: 'json',
-                success: function (response) {
-                    $("button[type=submit]").prop('disabled', false);
-                    if (response["status"] == true) {
-                        $("#slug").val(response["slug"]);
-                    }
+            fields.forEach(function(field) {
+                var input = $("#" + field);
+                var errorFeedback = input.siblings('p');
+                if (errors[field]) {
+                    input.addClass('is-invalid');
+                    errorFeedback
+                    .addClass('invalid-feedback')
+                    .html(errors[field][0]);
+                } else {
+                    input.removeClass('is-invalid');
+                    errorFeedback
+                    .removeClass('invalid-feedback')
+                    .html('');
                 }
             });
+        }
+    });
+
+    // for slug generation 
+    $("#name").change(function(){
+        var element = $(this);
+        $("button[type=submit]").prop('disabled', true);
+        $.ajax({
+            url: '{{ route("getSlug") }}',
+            type: 'get',
+            data: { title: element.val() },
+            dataType: 'json',
+            success: function (response) {
+                $("button[type=submit]").prop('disabled', false);
+                if (response["status"] == true) {
+                    $("#slug").val(response["slug"]);
+                }
+            }
         });
+    });
 </script>
 @endsection

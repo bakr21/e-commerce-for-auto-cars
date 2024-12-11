@@ -13,13 +13,6 @@ class UserAcces
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    // public function handle(Request $request, Closure $next ,$UserType): Response
-    // {
-    //     if(auth()->user()->type == $UserType){
-    //         return $next($request);
-    //     }
-    //     return response()->json(['message' => 'Unauthorized'], 401);
-    // }
 
     public function handle(Request $request, Closure $next, $UserType)
     {

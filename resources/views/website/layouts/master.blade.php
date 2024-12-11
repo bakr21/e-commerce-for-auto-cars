@@ -9,9 +9,10 @@
     <meta content="Free HTML Templates" name="description">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     
+    
 
     <!-- Favicon -->
-    <link href="{{asset('website/assets/img/favicon.ico')}}" rel="icon">
+    <link href="{{asset('website/assets/img/logoIcon.svg')}}" rel="icon">
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -27,6 +28,8 @@
     <link href="{{asset('website/assets/lib/animate/animate.min.css')}}" rel="stylesheet">
     <link href="{{asset('website/assets/lib/owlcarousel/assets/owl.carousel.min.css')}}" rel="stylesheet">
     <link href="{{asset('website/assets/lib/owlcarousel/assets/owl.theme.default.min.css')}}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
     <link href="{{asset('website/assets/css/ion.rangeSlider.min.css')}}" rel="stylesheet">
 
     <!-- Customized Bootstrap Stylesheet -->
@@ -64,10 +67,12 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
     <script src="{{asset('website/assets/lib/easing/easing.min.js')}}"></script>
     <script src="{{asset('website/assets/lib/owlcarousel/owl.carousel.min.js')}}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+
 
     <!-- Contact Javascript File -->
-    <script src="{{asset('website/assets/mail/jqBootstrapValidation.min.js')}}"></script>
-    <script src="{{asset('website/assets/mail/contact.js')}}"></script>
+    {{-- <script src="{{asset('website/assets/mail/jqBootstrapValidation.min.js')}}"></script>
+    <script src="{{asset('website/assets/mail/contact.js')}}"></script> --}}
     <script src="{{asset('website/assets/js/ion.rangeSlider.min.js')}}"></script>
 
 
@@ -86,29 +91,33 @@
             }
         });
     
-        function addtocart() {
-            var product_id = $('#product_id').val();
-            var qty = $('#qty_value').val();
-    
-            console.log('Product ID: ' + product_id + ' | Quantity: ' + qty);
-    
-            $.ajax({
-                method: 'POST',
-                url: "{{ route('product.addToCart') }}",
-                data: {
-                    _token: "{{ csrf_token() }}",
-                    product_id: product_id,
-                    quantity: qty
-                },
-                success: function(response) {
-                    Swal.fire(response.msg);
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error: ' + error);
-                    console.error(xhr.responseText);
-                }
-            });
-        }
+        $('.add-to-cart').on('click', function() {
+        var product_id = $(this).data('product-id');
+        var qty = 1;  // الكمية الثابتة
+
+        console.log('Product ID: ' + product_id + ' | Quantity: ' + qty);  // تأكد من أن الكمية هي 1
+        
+        // إرسال الـ AJAX
+        $.ajax({
+            method: 'POST',
+            url: "{{ route('product.addToCart') }}",  // تأكد من أن هذه هي الـ route الصحيحة
+            data: {
+                _token: "{{ csrf_token() }}",
+                product_id: product_id,
+                quantity: qty
+            },
+            success: function(response) {
+                Swal.fire({
+                    icon: response.icon, // تحديد نوع الأيقونة (success, error, warning, info, question)
+                    title: response.msg, // الرسالة التي يتم عرضها
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error('Error: ' + error);  // في حالة حدوث خطأ
+                console.error(xhr.responseText);
+            }
+        });
+    });
 
         function addToWishlist(id) {
             $.ajax({
@@ -176,6 +185,8 @@
                 }
             });
         }
+
+
     </script>
     
 </body>

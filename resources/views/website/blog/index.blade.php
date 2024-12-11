@@ -1,5 +1,5 @@
 @extends('website.layouts.master')
-@section('TitlePage' , 'blogs')
+@section('TitlePage' , 'Blogs')
 @section('content')
     <!-- Breadcrumb -->
     <div class="container-fluid">

@@ -24,8 +24,24 @@
         <div class="col-lg-9">
             <nav class="navbar navbar-expand-lg bg-dark navbar-dark py-3 py-lg-0 px-0">
                 <a href="" class="text-decoration-none d-block d-lg-none">
-                    <span class="h1 text-uppercase text-dark bg-light px-2">Auto</span>
-                    <span class="h1 text-uppercase text-light bg-primary px-2 ml-n1">Cars</span>
+                    @php
+                    $siteName = $site_settings->site_name ; 
+                    $nameParts = explode(' ', $siteName); 
+                    @endphp
+            
+                    @if(count($nameParts) == 1)
+                        <!-- إذا كانت كلمة واحدة -->
+                        <span class="h1 text-uppercase text-dark bg-light px-2">{{ $nameParts[0] }}</span>
+                    @elseif(count($nameParts) == 2)
+                        <!-- إذا كانت كلمتين -->
+                        <span class="h1 text-uppercase text-dark bg-light px-2">{{ $nameParts[0] }}</span>
+                        <span class="h1 text-uppercase text-light bg-primary px-2 ml-n1">{{ $nameParts[1] }}</span>
+                    @else
+                        <!-- إذا كانت أكثر من كلمتين -->
+                        <span class="h1 text-uppercase text-dark bg-light px-2">{{ $nameParts[0] }}</span>
+                        <span class="h1 text-uppercase text-light bg-primary px-2 ml-n1">{{ $nameParts[1] }}</span>
+                        <span class="h1 text-uppercase text-primary bg-dark px-2">{{ implode(' ', array_slice($nameParts, 2)) }}</span>
+                    @endif   
                 </a>
                 <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
                     <span class="navbar-toggler-icon"></span>
@@ -36,7 +52,7 @@
                         <a href="{{route('website.shop')}}" class="nav-item nav-link {{(Route::is('website.shop')) ? 'active' : '' }}">Shop</a>
                         <a href="{{route('website.blog.index')}}" class="nav-item nav-link {{(Route::is('website.blog.index')) ? 'active' : '' }}">Blogs</a>
                         <a href="{{route('website.categories')}}" class="nav-item nav-link {{(Route::is('website.categories')) ? 'active' : '' }}">Categories</a>
-                        <a href="{{route('website.contact')}}" class="nav-item nav-link {{(Route::is('website.contact')) ? 'active' : '' }}" >Contact</a>
+                        <a href="{{ url('page/contact-us') }}" class="nav-item nav-link {{ Request::is('page/contact-us') ? 'active' : '' }}" >Contact</a>
                     </div>
                     @php
                         use App\Models\Cart; 

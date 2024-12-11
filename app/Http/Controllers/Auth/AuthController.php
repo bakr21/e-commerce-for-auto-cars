@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
+use App\Models\Cart;
 
 
 class AuthController extends Controller
@@ -29,8 +30,9 @@ class AuthController extends Controller
         $this->middleware('auth')->except(['login', 'loginAction','register', 'registerSave','logout']);
     }
 
-    public function register (){
-        return view('Auth.register');
+    public function register()
+    {
+    return view('auth.register');
     }
 
     
@@ -44,34 +46,51 @@ class AuthController extends Controller
             'type'      => "0"
         ]);
     
-        Mail::to($user->email)->send(new WelcomeEmail($user));
+        if (!$user) {
+            return back()->withErrors(['error' => 'Failed to register user.']);
+        }
+        
+        try {
+            Mail::to($user->email)->send(new WelcomeEmail($user));
+        } catch (\Exception $e) {
+            return back()->withErrors(['email' => 'Failed to send welcome email.']);
+        }
+        
     
-        return redirect()->route('login');
+        Auth::login($user);
+
+    if ($user->type === 'admin') {
+        return redirect()->route('admin.dashboard');
+    }
+
+    return redirect()->route('home');
     }
     
 
     public function login (){
-        return view('Auth.login');
+        return view('auth.login');
     }
 
-    public function loginAction(StoreLoginRequest $request) {
-        
-        
-        if (!Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
-            throw ValidationException::withMessages([
-                'email' => trans('auth.failed')
-            ]);
-        }
-        
-        $request->session()->regenerate();
-    
-        
-        if (auth()->user()->type == 'admin') {
-            return redirect()->intended('dashboard');
-        } else {
-            return redirect()->intended('/');
-        }
+    public function loginAction(StoreLoginRequest $request)
+{
+    if (!Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
+        throw ValidationException::withMessages([
+            'email' => trans('auth.failed')
+        ]);
     }
+
+    $user = Auth::user();
+    if ($user->type === 'admin') {
+        return redirect()->route('admin.dashboard'); // توجيه المسؤول
+    }
+
+    return redirect()->intended(route('home'));
+
+
+}
+
+
+    
     
     public function logout(Request $request){
         Auth::guard('web')->logout();
@@ -206,6 +225,13 @@ class AuthController extends Controller
         return response()->json(['count' => $wishlistCount]);
     }
 
+    public function forgotPassword(){
+        // show forgot password form
+    }
+
+    public function processForgetPassword(){
+
+    }
 
 
 }
