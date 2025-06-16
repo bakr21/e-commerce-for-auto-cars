@@ -3,67 +3,91 @@
 namespace App\Http\Controllers\website;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Website\ProcessCheckoutRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
-use App\Models\Cart;
 use App\Models\Country;
 use App\Models\CustomerAddress;
 use App\Models\Order;
-use App\Http\Requests\website\StoreCheckoutRequest;
-use App\Models\OrderItem;
-use App\Models\Product;
-use App\Models\ShippingCharges;
+use App\Services\CartService;
+use App\Services\OrderService;
+use App\Services\PaymentService;
 use Illuminate\Support\Facades\Log;
-
-
 
 class CheckoutController extends Controller
 {
-    public function index() {
-        $carts = Cart::where('user_id', Auth::id())->get();
-    
-        $subTotal = $carts->sum(function($product) {
-            return $product->product->selling_price * $product->qty;
-        });
-    
+    protected $cartService;
+    protected $orderService;
+    protected $paymentService;
+
+    /**
+     * Create a new controller instance.
+     *
+     * @param CartService $cartService
+     * @param OrderService $orderService
+     * @param PaymentService $paymentService
+     */
+    public function __construct(CartService $cartService, OrderService $orderService, PaymentService $paymentService)
+    {
+        $this->cartService = $cartService;
+        $this->orderService = $orderService;
+        $this->paymentService = $paymentService;
+    }
+    /**
+     * Display the checkout page.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function index()
+    {
+        // Get cart items
+        $carts = $this->cartService->getCartItems();
+
+        // Calculate subtotal
+        $subTotal = $this->cartService->calculateSubtotal($carts);
+
+        // Get countries for dropdown
         $countries = Country::orderBy('name', 'ASC')->get();
-    
+
+        // Get customer address
         $customerAddress = CustomerAddress::where('user_id', Auth::user()->id)->first();
-    
+
+        // Calculate discount
+        $discount = $this->cartService->calculateDiscount($subTotal);
+
+        // Initialize shipping charge
         $totalShippingCharge = 0;
-        $grandTotal = $subTotal;
-    
-        if ($customerAddress != null) {
+        $grandTotal = $subTotal - $discount;
+
+        // Calculate shipping if customer address exists
+        if ($customerAddress) {
             $userCountry = $customerAddress->country_id;
-            $shippingInfo = ShippingCharges::where('country_id', $userCountry)->first();
-    
             $totalQty = $carts->sum('qty');
-    
-            if ($shippingInfo != null) {
-                $totalShippingCharge = $totalQty * $shippingInfo->amount;
-            } else {
-                $totalShippingCharge = $totalQty * 50;
-            }
-    
-            $grandTotal = $subTotal + $totalShippingCharge;
+            $totalShippingCharge = $this->cartService->calculateShipping($userCountry, $totalQty);
+            $grandTotal += $totalShippingCharge;
         }
-    
+
         return view('website.checkout.index', compact(
             'carts',
             'subTotal',
             'countries',
             'customerAddress',
             'totalShippingCharge',
-            'grandTotal'
+            'grandTotal',
+            'discount'
         ));
     }
 
-    public function processCheckout(Request $request)
+    /**
+     * Process the checkout request.
+     *
+     * @param  Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function processCheckout(ProcessCheckoutRequest $request)
     {
         // Check if cart is empty
-        $userId = Auth::id();
-        $cartItems = Cart::where('user_id', $userId)->with('product')->get();
+        $cartItems = $this->cartService->getCartItems();
         if ($cartItems->isEmpty()) {
             return response()->json([
                 'message' => 'Your cart is empty. Add products to proceed with checkout.',
@@ -71,27 +95,7 @@ class CheckoutController extends Controller
             ]);
         }
 
-        // Step 1: Validation
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|min:5|max:255',
-            'email' => 'required|string|email|max:255',
-            'phone' => 'required',
-            'address' => 'required|min:15',
-            'country' => 'required',
-            'city' => 'required',
-            'state' => 'required',
-            'zip' => 'required',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => 'Please fix the errors.',
-                'status' => false,
-                'errors' => $validator->errors(),
-            ]);
-        }
-
-        // Step 2: Save user address
+        // Save user address
         $user = Auth::user();
         CustomerAddress::updateOrCreate(
             ['user_id' => $user->id],
@@ -109,356 +113,205 @@ class CheckoutController extends Controller
         );
 
         // Calculate totals
-        $subtotal = $cartItems->reduce(fn($carry, $item) => $carry + ($item->product->selling_price * $item->qty), 0);
+        $subtotal = $this->cartService->calculateSubtotal($cartItems);
         $totalQty = $cartItems->sum('qty');
-        $shippingInfo = ShippingCharges::where('country_id', $request->country)->first();
-        $shipping = $shippingInfo ? $totalQty * $shippingInfo->amount : $totalQty * 50;
-        $grandTotal = $subtotal + $shipping;
+        $shipping = $this->cartService->calculateShipping($request->country, $totalQty);
+        $discount = $this->cartService->calculateDiscount($subtotal);
+        $grandTotal = ($subtotal + $shipping) - $discount;
 
-        if ($request->payment_method === 'cod') {
-            return $this->processCOD($request, $cartItems, $subtotal, $shipping, $grandTotal);
-        } elseif ($request->payment_method === 'card') {
-            return $this->processPayPal($request, $cartItems, $subtotal, $shipping, $grandTotal);
-        } else {
-            return $this->processStripe($cartItems);
-        }
-    }
+        // Log the payment method for debugging
+        Log::info('Checkout - Payment Method: ' . $request->payment_method);
 
-    private function processCOD($request, $cartItems, $subtotal, $shipping, $grandTotal)
-    {
-        $order = $this->createOrder($request, $subtotal, $shipping, $grandTotal, 'not paid', 'pending');
-        $this->saveOrderItems($order, $cartItems);
+        // Process based on payment method
+        switch ($request->payment_method) {
+            case 'cod':
+                Log::info('Checkout - Processing COD payment');
+                return response()->json(
+                    $this->paymentService->processCOD($request, $cartItems, $subtotal, $shipping, $grandTotal)
+                );
 
-        Cart::where('user_id', Auth::id())->delete();
+            case 'card':
+                Log::info('Checkout - Processing PayPal payment');
+                return response()->json(
+                    $this->paymentService->processPayPal($request, $cartItems, $subtotal, $shipping, $grandTotal)
+                );
 
-        return response()->json([
-            'message' => 'Order saved successfully',
-            'status' => true,
-            'orderId' => $order->id,
-            'payment_method' => 'cod',
-        ]);
-    }
+            case 'stripe':
+                Log::info('Checkout - Processing Stripe payment');
+                return response()->json(
+                    $this->paymentService->processStripe($cartItems, $subtotal, $shipping, $grandTotal)
+                );
 
-    private function processPayPal($request, $cartItems, $subtotal, $shipping, $grandTotal)
-    {
-        $order = $this->createOrder($request, $subtotal, $shipping, $grandTotal, 'not paid', 'pending');
-
-        $provider = new \Srmklive\PayPal\Services\PayPal;
-        $provider->setApiCredentials(config('paypal'));
-
-        $orderData = [
-            "intent" => "CAPTURE",
-            "purchase_units" => [
-                [
-                    "reference_id" => "ORDER-" . $order->id,
-                    "amount" => [
-                        "currency_code" => config('paypal.currency'),
-                        "value" => number_format($grandTotal, 2, '.', ''),
-                    ],
-                    "description" => "Payment for Order #" . $order->id,
-                ]
-            ],
-            "application_context" => [
-                "brand_name" => "Your Brand Name",
-                "cancel_url" => route('paypal.cancel'),
-                "return_url" => route('paypal.success', ['order_id' => $order->id]),
-                "landing_page" => "BILLING",
-                "user_action" => "PAY_NOW",
-            ]
-        ];
-
-        $response = $provider->createOrder($orderData);
-
-        if (isset($response['status']) && $response['status'] === 'CREATED') {
-            $redirectUrl = collect($response['links'])->firstWhere('rel', 'approve')['href'];
-
-            return response()->json([
-                'status' => true,
-                'redirect_url' => $redirectUrl,
-                'payment_method' => 'card',
-                'message' => 'Please complete the payment through PayPal.',
-            ]);
-        }
-
-        return response()->json([
-            'status' => false,
-            'message' => 'Failed to create PayPal order.',
-            'details' => $response,
-        ]);
-    }
-
-    private function processStripe($cartItems)
-    {
-        $stripe = new \Stripe\StripeClient(config('stripe.stripe_sk'));
-        $lineItems = $cartItems->map(fn($item) => [
-            'price_data' => [
-                'currency' => 'usd',
-                'product_data' => ['name' => $item->product->name],
-                'unit_amount' => $item->product->selling_price * 100,
-            ],
-            'quantity' => $item->qty,
-        ])->toArray();
-
-        $response = $stripe->checkout->sessions->create([
-            'line_items' => $lineItems,
-            'mode' => 'payment',
-            'success_url' => route('stripe.success') . '?session_id={CHECKOUT_SESSION_ID}',
-            'cancel_url' => route('stripe.cancel'),
-        ]);
-
-        if (isset($response->id)) {
-            return response()->json([
-                'status' => true,
-                'redirect_url' => $response->url,
-                'payment_method' => 'stripe',
-            ]);
-        }
-
-        return response()->json([
-            'status' => false,
-            'message' => 'Failed to create Stripe session.',
-        ]);
-    }
-
-    private function createOrder($request, $subtotal, $shipping, $grandTotal, $paymentStatus, $status)
-    {
-        $order = new Order();
-        $order->user_id = Auth::id();
-        $order->subtotal = $subtotal;
-        $order->shipping = $shipping;
-        $order->discount = 0;
-        $order->grand_total = $grandTotal;
-        $order->payment_status = $paymentStatus;
-        $order->status = $status;
-        $order->name = $request->name;
-        $order->email = $request->email;
-        $order->mobile = $request->phone;
-        $order->address = $request->address;
-        $order->address2 = $request->address2;
-        $order->city = $request->city;
-        $order->state = $request->state;
-        $order->zip = $request->zip;
-        $order->notes = $request->notes;
-        $order->country_id = $request->country;
-        $order->save();
-
-        return $order;
-    }
-
-    private function saveOrderItems($order, $cartItems)
-    {
-        foreach ($cartItems as $item) {
-            $orderItem = new OrderItem();
-            $orderItem->order_id = $order->id;
-            $orderItem->product_id = $item->product_id;
-            $orderItem->name = $item->product->name;
-            $orderItem->qty = $item->qty;
-            $orderItem->price = $item->product->selling_price;
-            $orderItem->total = $item->qty * $item->product->selling_price;
-            $orderItem->save();
-
-            $product = Product::find($item->product_id);
-            if ($product) {
-                $product->qty -= $item->qty;
-                $product->save();
-            }
-        }
-    }
-
-
-    public function paypalSuccess(Request $request)
-    {
-        $orderId = $request->order_id; // معرف الطلب المحلي
-        $paypalToken = $request->token; // رمز الطلب من PayPal
-        $payerId = $request->PayerID; // معرف المستخدم من PayPal
-
-        if (!$orderId || !$paypalToken || !$payerId) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Missing required parameters.'
-            ]);
-        }
-
-        // تحميل الطلب من قاعدة البيانات
-        $order = Order::find($orderId);
-        if (!$order) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Order not found.'
-            ]);
-        }
-
-        // التحقق من الطلب من خلال PayPal
-        $provider = new \Srmklive\PayPal\Services\PayPal;
-        $provider->setApiCredentials(config('paypal'));
-        $provider->getAccessToken();
-
-        try {
-            $response = $provider->capturePaymentOrder($paypalToken);
-
-            if (isset($response['status']) && $response['status'] === 'COMPLETED') {
-                // تحديث حالة الطلب عند النجاح
-                $order->payment_status = 'paid';
-                $order->status = 'completed';
-                $order->save();
-
-                return response()->json([
-                    'status' => true,
-                    'message' => 'Payment successful!',
-                    'order_id' => $order->id
-                ]);
-            } else {
+            default:
+                Log::error('Checkout - Invalid payment method: ' . $request->payment_method);
                 return response()->json([
                     'status' => false,
-                    'message' => 'Payment not completed.',
-                    'details' => $response
+                    'message' => 'Invalid payment method selected.',
                 ]);
-            }
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Failed to capture payment.',
-                'error' => $e->getMessage()
-            ]);
         }
     }
-    
-    public function stripeSucces(Request $request)
+
+
+
+
+    /**
+     * Handle successful PayPal payment.
+     *
+     * @param  Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function paypalSuccess(Request $request)
     {
-        if (isset($request->session_id)) {
-            $stripe = new \Stripe\StripeClient(config('stripe.stripe_sk'));
-            $response = $stripe->checkout->sessions->retrieve($request->session_id);
+        $orderId = $request->order_id;
 
-            if ($response && $response->payment_status === 'paid') {
-                $userId = Auth::id();
-
-                // Fetch cart items
-                $cartItems = Cart::where('user_id', $userId)->with('product')->get();
-
-                if ($cartItems->isEmpty()) {
-                    return redirect()->route('checkout.index')->with('error', 'Cart is empty.');
-                }
-
-                // Create a new order
-                $subtotal = $cartItems->reduce(function ($carry, $item) {
-                    return $carry + ($item->product->selling_price * $item->qty);
-                }, 0);
-
-                $shipping = 0; // Calculate shipping if needed
-                $grandTotal = $subtotal + $shipping;
-
-                $order = new Order();
-                $order->user_id = $userId;
-                $order->subtotal = $subtotal;
-                $order->shipping = $shipping;
-                $order->grand_total = $grandTotal;
-                $order->payment_status = 'paid';
-                
-                $order->name = $request->name;
-                $order->email = $request->email;
-                $order->mobile = $request->phone;
-                $order->address = $request->address;
-                $order->address2 = $request->address2;
-                $order->city = $request->city;
-                $order->state = $request->state;
-                $order->zip = $request->zip;
-                $order->notes = $request->notes;
-                $order->country_id = $request->country;
-                $order->save();
-
-                // Save order items
-                foreach ($cartItems as $item) {
-                    $orderItem = new OrderItem();
-                    $orderItem->order_id = $order->id;
-                    $orderItem->product_id = $item->product_id;
-                    $orderItem->name = $item->product->name;
-                    $orderItem->qty = $item->qty;
-                    $orderItem->price = $item->product->selling_price;
-                    $orderItem->total = $item->qty * $item->product->selling_price;
-                    $orderItem->save();
-
-                    // Decrease product quantity
-                    $product = Product::find($item->product_id);
-                    if ($product) {
-                        $product->qty -= $item->qty;
-                        $product->save();
-                    }
-                }
-
-                // Clear the cart
-                Cart::where('user_id', $userId)->delete();
-
-                return redirect()->route('thank.you', ['id' => $order->id]);
-            }
+        // Check if we have the required parameters
+        if (!$orderId) {
+            return redirect()->route('checkout.index')->with('error', 'Missing order ID parameter.');
         }
 
-        return redirect()->route('stripe.cancel');
-    }
+        // Process the successful payment
+        $order = $this->paymentService->handlePayPalSuccess($orderId);
 
-
-    public function stripeCancel()
-    {
-        return "Cancel payment";
-    }
-    public function paypalCancel()
-    {
-        return redirect()->route('checkout.index')->withErrors('Payment was cancelled.');
-    }
-
-
-
-    public function getOrderSummary(Request $request) {
-        $carts = Cart::where('user_id', Auth::id())->get();
-        $subTotal = $carts->sum(function($product) {
-            return $product->product->selling_price * $product->qty;
-        });
-    
-        $totalQty = 0;
-        foreach ($carts as $item) {
-            $totalQty += $item->qty;
-        }
-    
-        if ($request->country_id > 0) {
-            $shippingInfo = ShippingCharges::where('country_id', $request->country_id)->first();
-    
-            if ($shippingInfo) {
-                $shippingCharge = $totalQty * $shippingInfo->amount;
-                $grandTotal = $subTotal + $shippingCharge;
-    
-                return response()->json([
-                    'status' => true,
-                    'shippingCharge' => $shippingCharge,
-                    'grandTotal' => $grandTotal,
-                ]);
-            } else {
-                $shippingCharge = $totalQty * 50;
-                $grandTotal = $subTotal + $shippingCharge;
-    
-                return response()->json([
-                    'status' => true,
-                    'message' => 'Rest of world shipping',
-                    'shippingCharge' => $shippingCharge,
-                    'grandTotal' => $grandTotal,
-                ]);
-            }
-        } else {
-            return response()->json([
-                'status' => true,
-                'shippingCharge' => 0,
-                'grandTotal' => $subTotal,
-            ]);
-        }
-    }
-    
-
-    public function thankYou($id) {
-        $order = Order::find($id);
-        
         if (!$order) {
             return redirect()->route('checkout.index')->with('error', 'Order not found.');
         }
-        
+
+        return redirect()->route('checkout.thankyou', ['orderId' => $order->id]);
+    }
+
+    /**
+     * Handle successful Stripe payment.
+     *
+     * @param  Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function stripeSucces(Request $request)
+    {
+        $sessionId = $request->session_id;
+
+        if (!$sessionId) {
+            return redirect()->route('checkout.index')->with('error', 'Invalid payment session.');
+        }
+
+        // Process the successful payment
+        $order = $this->paymentService->handleStripeSuccess($sessionId);
+
+        if (!$order) {
+            return redirect()->route('checkout.index')->with('error', 'Payment not completed or order not found.');
+        }
+
+        // Clear session data
+        session()->forget(['stripe_order_id']);
+
+        return redirect()->route('checkout.thankyou', ['orderId' => $order->id]);
+    }
+
+    /**
+     * Handle Stripe payment cancellation.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function stripeCancel()
+    {
+        // Clear any Stripe session data
+        session()->forget('stripe_order_id');
+
+        return redirect()->route('checkout.index')->withErrors('Payment was cancelled.');
+    }
+
+    /**
+     * Handle PayPal payment cancellation.
+     *
+     * @param  Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function paypalCancel(Request $request)
+    {
+        // Get the order ID if available
+        $orderId = $request->order_id;
+
+        if ($orderId) {
+            // Find the order
+            $order = Order::find($orderId);
+
+            if ($order) {
+                // Update order status to cancelled
+                $this->orderService->updateOrderStatus($order, 'cancelled');
+            }
+        }
+
+        // Clear any PayPal session data
+        session()->forget('paypal_order_id');
+
+        return redirect()->route('checkout.index')->with('error', 'Payment was cancelled. Please try again or choose a different payment method.');
+    }
+
+    /**
+     * Get order summary with pricing details.
+     *
+     * @param  Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getOrderSummary(Request $request)
+    {
+        $summary = $this->cartService->getOrderSummary($request);
+        return response()->json($summary);
+    }
+
+    /**
+     * Apply discount coupon.
+     *
+     * @param  Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function applyDiscount(Request $request)
+    {
+        // Validate request
+        if (!$request->coupon_code) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Coupon code is required.'
+            ]);
+        }
+
+        // Apply the discount
+        $result = $this->cartService->applyDiscount($request->coupon_code);
+
+        if (!$result['status']) {
+            return response()->json($result);
+        }
+
+        // Return updated order summary
+        return $this->getOrderSummary($request);
+    }
+
+    /**
+     * Remove discount coupon.
+     *
+     * @param  Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function removeDiscount(Request $request)
+    {
+        $this->cartService->removeDiscount();
+        return $this->getOrderSummary($request);
+    }
+
+    /**
+     * Display thank you page after successful order.
+     *
+     * @param  int  $id
+     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
+     */
+    public function thankYou($id)
+    {
+        $order = Order::find($id);
+
+        if (!$order) {
+            return redirect()->route('checkout.index')->with('error', 'Order not found.');
+        }
+
         return view('website.checkout.thanks', compact('id', 'order'));
     }
-    
+
 }

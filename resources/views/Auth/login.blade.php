@@ -1,38 +1,56 @@
 @extends('website.layouts.master')
-@section('TitlePage' , 'Home')
+@section('TitlePage', __('login.login'))
 @section('content')
 
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-6">
+            <div class="shadow-sm p-5 bg-body rounded">
+                @if (session('status'))
+                    <div class="alert alert-success" role="alert">
+                        {{ session('status') }}
+                    </div>
+                @endif
 
-        <div class="container">
-            <div class="login-form shadow-sm p-5 bg-body rounded">    
-                <form action="{{route('login.action')}}" method="POST">
+                <form action="{{ route('login.action') }}" method="POST">
                     @csrf
-                    <h4 class="modal-title pb-3">Login to Your Account</h4>
+                    <h4 class="modal-title pb-3">{{ __('login.welcome_back') }}</h4>
+                    <p class="text-muted mb-4">{{ __('login.sign_in_to_continue') }}</p>
+
                     <div class="form-group">
-                        <input type="email" name="email" class="form-control" placeholder="Enter your email address"  value="{{old('email')}}">
+                        <label for="email">{{ __('login.email') }}</label>
+                        <input type="email" id="email" name="email" class="form-control" placeholder="{{ __('login.email') }}" value="{{ old('email') }}">
                         @error('email')
-                            <span class="text-danger">{{$message}}</span>
+                            <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
+
                     <div class="form-group">
-                        <input type="password" name="password" class="form-control" placeholder="Enter your password" >
+                        <label for="password">{{ __('login.password') }}</label>
+                        <input type="password" id="password" name="password" class="form-control" placeholder="{{ __('login.password') }}">
                         @error('password')
-                            <span class="text-danger">{{$message}}</span>
+                            <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input"
-                            value="remember-me" name="remember" id="remember" checked  required>
-                        <label class="form-check-label"
-                            for="remember">Remember me</label>
+
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
+                        <label class="form-check-label" for="remember">{{ __('login.remember_me') }}</label>
                     </div>
-                    <div class="form-group small">
-                        <a href="#" class="forgot-link">Forgot Password?</a>
-                    </div> 
-                    <input type="submit" class="btn btn-dark btn-block btn-lg" value="Login">              
-                </form>			
-                <div class="text-center mt-3">Don't have an account? <a href="{{ route('register')}}" class="fw-bold hover-a" >Sign up</a></div>
+
+                    <div class="form-group mb-4">
+                        <a href="{{ route('password.request') }}" class="forgot-link btn-link">{{ __('login.forgot_password') }}</a>
+                    </div>
+
+                    <button type="submit" class="btn btn-dark btn-block btn-lg">{{ __('login.login') }}</button>
+                </form>
+
+                <div class="text-center mt-3">
+                    {{ __('login.dont_have_account') }} <a href="{{ route('register') }}" class="fw-bold hover-a">{{ __('login.create_account') }}</a>
+                </div>
             </div>
         </div>
-        
+    </div>
+</div>
+
 @endsection

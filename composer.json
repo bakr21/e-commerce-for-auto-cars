@@ -11,8 +11,9 @@
         "laravel/framework": "^10.0",
         "laravel/sanctum": "^3.2",
         "laravel/tinker": "^2.8",
+        "mcamara/laravel-localization": "^2.3",
         "php-flasher/flasher-laravel": "^1.15",
-        "php-flasher/flasher-symfony": "^1.15",
+        "spatie/laravel-translatable": "^6.11",
         "srmklive/paypal": "^3.0",
         "stripe/stripe-php": "^16.3"
     },
@@ -32,9 +33,8 @@
             "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
-        "app/Helpers/helper.php"
-    ]
-        
+            "app/Helpers/helper.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

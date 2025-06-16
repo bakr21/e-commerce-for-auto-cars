@@ -20,8 +20,11 @@ class UserFactory extends Factory
         return [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
+            'country_id' => null, // سيتم تحديده في الـ seeder
             'email_verified_at' => now(),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'type' => 0, // user by default
+            'status' => 1, // active by default
             'remember_token' => Str::random(10),
         ];
     }
@@ -35,6 +38,30 @@ class UserFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
+        ]);
+    }
+
+    /**
+     * Create an admin user.
+     *
+     * @return $this
+     */
+    public function admin(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'type' => 1,
+        ]);
+    }
+
+    /**
+     * Create an inactive user.
+     *
+     * @return $this
+     */
+    public function inactive(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => 0,
         ]);
     }
 }

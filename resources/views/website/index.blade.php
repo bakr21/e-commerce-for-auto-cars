@@ -5,32 +5,53 @@
     @include('website.sections.carousel')
 <!-- Carousel End -->
 
+<!-- Hero Banner Start -->
+<div class="container-fluid py-5 hero-banner">
+    <div class="row px-xl-5">
+        <div class="col-12">
+            <div class="hero-banner-content">
+                <h2 class="fade-in">{{__('homepage.best_auto_parts')}}</h2>
+                <p class="slide-in-left">{{__('homepage.we_provide')}}</p>
+                <a href="#featured-products" class="btn btn-primary btn-lg bounce">{{__('homepage.shop_now')}}</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Hero Banner End -->
 
 <!-- Featured Start -->
 <div class="container-fluid pt-5">
     <div class="row px-xl-5 pb-3">
-        <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
-            <div class="d-flex align-items-center bg-light mb-4" style="padding: 30px;">
-                <h1 class="fa fa-check text-primary m-0 mr-3"></h1>
-                <h5 class="font-weight-semi-bold m-0">Quality Product</h5>
+        <div class="col-lg-3 col-md-6 col-sm-12 pb-1" >
+            <div class="feature-box d-flex align-items-center bg-light mb-4" data-aos="fade-up" data-aos-delay="100" style="padding: 30px;">
+                <div class="feature-icon">
+                    <h1 class="fa fa-check text-primary m-0 mr-3"></h1>
+                </div>
+                <h5 class="font-weight-semi-bold m-0">{{__('home.quality_product')}}</h5>
             </div>
         </div>
         <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
-            <div class="d-flex align-items-center bg-light mb-4" style="padding: 30px;">
-                <h1 class="fa fa-shipping-fast text-primary m-0 mr-2"></h1>
-                <h5 class="font-weight-semi-bold m-0">Free Shipping</h5>
+            <div class="feature-box d-flex align-items-center bg-light mb-4" data-aos="fade-up" data-aos-delay="200" style="padding: 30px;">
+                <div class="feature-icon">
+                    <h1 class="fa fa-shipping-fast text-primary m-0 mr-2"></h1>
+                </div>
+                <h5 class="font-weight-semi-bold m-0">{{__('home.fast_delivery')}}</h5>
             </div>
         </div>
         <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
-            <div class="d-flex align-items-center bg-light mb-4" style="padding: 30px;">
-                <h1 class="fas fa-exchange-alt text-primary m-0 mr-3"></h1>
-                <h5 class="font-weight-semi-bold m-0">14-Day Return</h5>
+            <div class="feature-box d-flex align-items-center bg-light mb-4" data-aos="fade-up" data-aos-delay="300" style="padding: 30px;">
+                <div class="feature-icon">
+                    <h1 class="fas fa-exchange-alt text-primary m-0 mr-3"></h1>
+                </div>
+                <h5 class="font-weight-semi-bold m-0">{{__('home.14_day_returns')}}</h5>
             </div>
         </div>
         <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
-            <div class="d-flex align-items-center bg-light mb-4" style="padding: 30px;">
-                <h1 class="fa fa-phone-volume text-primary m-0 mr-3"></h1>
-                <h5 class="font-weight-semi-bold m-0">24/7 Support</h5>
+            <div class="feature-box d-flex align-items-center bg-light mb-4" data-aos="fade-up" data-aos-delay="400" style="padding: 30px;">
+                <div class="feature-icon">
+                    <h1 class="fa fa-phone-volume text-primary m-0 mr-3"></h1>
+                </div>
+                <h5 class="font-weight-semi-bold m-0">{{__('home.customer_support')}}</h5>
             </div>
         </div>
     </div>
@@ -47,294 +68,122 @@
     @include('website.sections.trend-products')
 <!-- Products End -->
 
-
-<!-- Offer Start -->
+<!-- Promo Banner Start -->
 <div class="container-fluid pt-5 pb-3">
     <div class="row px-xl-5">
-        <div class="col-md-6">
-            <div class="product-offer mb-30" style="height: 300px;">
-                <img class="img-fluid" src="img//offer-1-n.jpg" alt="">
-                <div class="offer-text">
-                    <h6 class="text-white text-uppercase">Save 20%</h6>
-                    <h3 class="text-white mb-3">Special Offer</h3>
-                    <a href="" class="btn btn-primary">Shop Now</a>
+        <div class="col-md-6" data-aos="fade-up">
+            <div class="promo-banner mb-30" style="height: 300px;">
+                <div class="promo-banner-overlay"></div>
+                <img class="img-fluid w-100 h-100" src="{{asset('website/assets/img/offer-1-n.webp')}}" alt="" style="object-fit: cover;">
+                <div class="promo-banner-content">
+                    <h6 class="text-white text-uppercase fade-in">{{__('homepage.special_offers')}}</h6>
+                    <h3 class="text-white mb-3 slide-in-left">{{__('homepage.luxury_parts')}}</h3>
+                    <a href="{{route('website.shop')}}" class="btn btn-primary">{{__('homepage.shop_now')}}</a>
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="product-offer mb-30" style="height: 300px;">
-                <img class="img-fluid" src="img/offer-2-n.jpg" alt="">
-                <div class="offer-text">
-                    <h6 class="text-white text-uppercase">Save 20%</h6>
-                    <h3 class="text-white mb-3">Special Offer</h3>
-                    <a href="" class="btn btn-primary">Shop Now</a>
+        <div class="col-md-6" data-aos="fade-down">
+            <div class="promo-banner mb-30" style="height: 300px;">
+                <div class="promo-banner-overlay"></div>
+                <img class="img-fluid w-100 h-100" src="{{asset('website/assets/img/offer-2-n.webp')}}" alt="" style="object-fit: cover;">
+                <div class="promo-banner-content">
+                    <h6 class="text-white text-uppercase fade-in">{{__('homepage.new_arrivals')}}</h6>
+                    <h3 class="text-white mb-3 slide-in-right">{{__('homepage.latest_collections')}}</h3>
+                    <a href="{{route('website.categories')}}" class="btn btn-primary">{{__('homepage.explore_now')}}</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<!-- Offer End -->
+<!-- Promo Banner End -->
 
 
-{{-- <!-- Products Start -->
-<div class="container-fluid pt-5 pb-3">
-    <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">Recent Products</span></h2>
-    <div class="row px-xl-5">
-        <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
-            <div class="product-item bg-light mb-4">
-                <div class="product-img position-relative overflow-hidden">
-                    <img class="img-fluid w-100" src="img/product-1.png" alt="">
-                    <div class="product-action">
-                        <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
-                        <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
-                        <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                        <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
-                    </div>
-                </div>
-                <div class="text-center py-4">
-                    <a class="h6 text-decoration-none text-truncate" href="">Product Name Goes Here</a>
-                    <div class="d-flex align-items-center justify-content-center mt-2">
-                        <h5>$123.00</h5><h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-center mb-1">
-                        <small class="fa fa-star text-primary mr-1"></small>
-                        <small class="fa fa-star text-primary mr-1"></small>
-                        <small class="fa fa-star text-primary mr-1"></small>
-                        <small class="fa fa-star text-primary mr-1"></small>
-                        <small class="fa fa-star text-primary mr-1"></small>
-                        <small>(99)</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
-            <div class="product-item bg-light mb-4">
-                <div class="product-img position-relative overflow-hidden">
-                    <img class="img-fluid w-100" src="img/product-2.png" alt="">
-                    <div class="product-action">
-                        <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
-                        <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
-                        <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                        <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
-                    </div>
-                </div>
-                <div class="text-center py-4">
-                    <a class="h6 text-decoration-none text-truncate" href="">Product Name Goes Here</a>
-                    <div class="d-flex align-items-center justify-content-center mt-2">
-                        <h5>$123.00</h5><h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-center mb-1">
-                        <small class="fa fa-star text-primary mr-1"></small>
-                        <small class="fa fa-star text-primary mr-1"></small>
-                        <small class="fa fa-star text-primary mr-1"></small>
-                        <small class="fa fa-star text-primary mr-1"></small>
-                        <small class="fa fa-star-half-alt text-primary mr-1"></small>
-                        <small>(99)</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
-            <div class="product-item bg-light mb-4">
-                <div class="product-img position-relative overflow-hidden">
-                    <img class="img-fluid w-100" src="img/product-3.jfif" alt="">
-                    <div class="product-action">
-                        <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
-                        <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
-                        <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                        <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
-                    </div>
-                </div>
-                <div class="text-center py-4">
-                    <a class="h6 text-decoration-none text-truncate" href="">Product Name Goes Here</a>
-                    <div class="d-flex align-items-center justify-content-center mt-2">
-                        <h5>$123.00</h5><h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-center mb-1">
-                        <small class="fa fa-star text-primary mr-1"></small>
-                        <small class="fa fa-star text-primary mr-1"></small>
-                        <small class="fa fa-star text-primary mr-1"></small>
-                        <small class="fa fa-star-half-alt text-primary mr-1"></small>
-                        <small class="far fa-star text-primary mr-1"></small>
-                        <small>(99)</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
-            <div class="product-item bg-light mb-4">
-                <div class="product-img position-relative overflow-hidden">
-                    <img class="img-fluid w-100" src="img/product-4.jfif" alt="">
-                    <div class="product-action">
-                        <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
-                        <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
-                        <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                        <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
-                    </div>
-                </div>
-                <div class="text-center py-4">
-                    <a class="h6 text-decoration-none text-truncate" href="">Product Name Goes Here</a>
-                    <div class="d-flex align-items-center justify-content-center mt-2">
-                        <h5>$123.00</h5><h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-center mb-1">
-                        <small class="fa fa-star text-primary mr-1"></small>
-                        <small class="fa fa-star text-primary mr-1"></small>
-                        <small class="fa fa-star text-primary mr-1"></small>
-                        <small class="far fa-star text-primary mr-1"></small>
-                        <small class="far fa-star text-primary mr-1"></small>
-                        <small>(99)</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
-            <div class="product-item bg-light mb-4">
-                <div class="product-img position-relative overflow-hidden">
-                    <img class="img-fluid w-100" src="img/product-5.jpg" alt="">
-                    <div class="product-action">
-                        <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
-                        <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
-                        <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                        <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
-                    </div>
-                </div>
-                <div class="text-center py-4">
-                    <a class="h6 text-decoration-none text-truncate" href="">Product Name Goes Here</a>
-                    <div class="d-flex align-items-center justify-content-center mt-2">
-                        <h5>$123.00</h5><h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-center mb-1">
-                        <small class="fa fa-star text-primary mr-1"></small>
-                        <small class="fa fa-star text-primary mr-1"></small>
-                        <small class="fa fa-star text-primary mr-1"></small>
-                        <small class="fa fa-star text-primary mr-1"></small>
-                        <small class="fa fa-star text-primary mr-1"></small>
-                        <small>(99)</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
-            <div class="product-item bg-light mb-4">
-                <div class="product-img position-relative overflow-hidden">
-                    <img class="img-fluid w-100" src="img/product-6.jpg" alt="">
-                    <div class="product-action">
-                        <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
-                        <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
-                        <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                        <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
-                    </div>
-                </div>
-                <div class="text-center py-4">
-                    <a class="h6 text-decoration-none text-truncate" href="">Product Name Goes Here</a>
-                    <div class="d-flex align-items-center justify-content-center mt-2">
-                        <h5>$123.00</h5><h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-center mb-1">
-                        <small class="fa fa-star text-primary mr-1"></small>
-                        <small class="fa fa-star text-primary mr-1"></small>
-                        <small class="fa fa-star text-primary mr-1"></small>
-                        <small class="fa fa-star text-primary mr-1"></small>
-                        <small class="fa fa-star-half-alt text-primary mr-1"></small>
-                        <small>(99)</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
-            <div class="product-item bg-light mb-4">
-                <div class="product-img position-relative overflow-hidden">
-                    <img class="img-fluid w-100" src="img/product-5.jpg" alt="">
-                    <div class="product-action">
-                        <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
-                        <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
-                        <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                        <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
-                    </div>
-                </div>
-                <div class="text-center py-4">
-                    <a class="h6 text-decoration-none text-truncate" href="">Product Name Goes Here</a>
-                    <div class="d-flex align-items-center justify-content-center mt-2">
-                        <h5>$123.00</h5><h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-center mb-1">
-                        <small class="fa fa-star text-primary mr-1"></small>
-                        <small class="fa fa-star text-primary mr-1"></small>
-                        <small class="fa fa-star text-primary mr-1"></small>
-                        <small class="fa fa-star-half-alt text-primary mr-1"></small>
-                        <small class="far fa-star text-primary mr-1"></small>
-                        <small>(99)</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
-            <div class="product-item bg-light mb-4">
-                <div class="product-img position-relative overflow-hidden">
-                    <img class="img-fluid w-100" src="img/product-8.jpg" alt="">
-                    <div class="product-action">
-                        <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
-                        <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
-                        <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                        <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
-                    </div>
-                </div>
-                <div class="text-center py-4">
-                    <a class="h6 text-decoration-none text-truncate" href="">Product Name Goes Here</a>
-                    <div class="d-flex align-items-center justify-content-center mt-2">
-                        <h5>$123.00</h5><h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-center mb-1">
-                        <small class="fa fa-star text-primary mr-1"></small>
-                        <small class="fa fa-star text-primary mr-1"></small>
-                        <small class="fa fa-star text-primary mr-1"></small>
-                        <small class="far fa-star text-primary mr-1"></small>
-                        <small class="far fa-star text-primary mr-1"></small>
-                        <small>(99)</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Products End -->
-
-
-<!-- Vendor Start -->
 <div class="container-fluid py-5">
-    <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">Vendor</span></h2>
+    <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4" data-aos="fade-down"><span class="bg-secondary pr-3">{{__('home.vendors')}}</span></h2>
 
     <div class="row px-xl-5">
         <div class="col">
             <div class="owl-carousel vendor-carousel">
-                <div class="bg-light p-4">
-                    <img src="img/vendor-1.jpg" alt="">
+                <div class="bg-light p-4" data-aos="zoom-in" data-aos-delay="100">
+                    <img src="{{asset('website/assets/img/mahle.png')}}" alt="Mahle" class="pulse">
                 </div>
-                <div class="bg-light p-4">
-                    <img src="img/vendor-2.jpg" alt="">
+                <div class="bg-light p-4" data-aos="zoom-in" data-aos-delay="200">
+                    <img src="{{asset('website/assets/img/sorl.png')}}" alt="Sorl" class="pulse">
                 </div>
-                <div class="bg-light p-4">
-                    <img src="img/vendor-3.jpg" alt="">
+                <div class="bg-light p-4" data-aos="zoom-in" data-aos-delay="300">
+                    <img src="{{asset('website/assets/img/mannfilter.png')}}" alt="Mann Filter" class="pulse">
                 </div>
-                <div class="bg-light p-4">
-                    <img src="img/vendor-4.jpg" alt="">
+                <div class="bg-light p-4" data-aos="zoom-in" data-aos-delay="400">
+                    <img src="{{asset('website/assets/img/bendix.png')}}" alt="Bendix" class="pulse">
                 </div>
-                <div class="bg-light p-4">
-                    <img src="img/vendor-5.jpg" alt="">
+                <div class="bg-light p-4" data-aos="zoom-in" data-aos-delay="500">
+                    <img src="{{asset('website/assets/img/smg.png')}}" alt="SMG" class="pulse">
                 </div>
-                <div class="bg-light p-4">
-                    <img src="img/vendor-6.jpg" alt="">
-                </div>
-                <div class="bg-light p-4">
-                    <img src="img/vendor-7.jpg" alt="">
-                </div>
-                <div class="bg-light p-4">
-                    <img src="img/vendor-8.jpg" alt="">
+                <div class="bg-light p-4" data-aos="zoom-in" data-aos-delay="600">
+                    <img src="{{asset('website/assets/img/hella.png')}}" alt="Hella" class="pulse">
                 </div>
             </div>
         </div>
     </div>
 </div>
-<!-- Vendor End --> --}}
+
+<!-- Why Choose Us Start -->
+<div class="container-fluid py-5 bg-light">
+    <div class="row px-xl-5 py-5">
+        <div class="col-lg-6" data-aos="zoom-in">
+            <h2 class="mb-4">{{__('homepage.why_choose_us')}}</h2>
+            <p class="mb-4">{{__('homepage.why_choose_description')}}</p>
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="d-flex align-items-center scroll-animation">
+                        <div class="d-flex align-items-center justify-content-center rounded-circle bg-primary text-white" style="width: 50px; height: 50px;">
+                            <i class="fa fa-check"></i>
+                        </div>
+                        <div class="ml-3">
+                            <h5 class="mb-0">{{__('homepage.original_products')}}</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="d-flex align-items-center scroll-animation">
+                        <div class="d-flex align-items-center justify-content-center rounded-circle bg-primary text-white" style="width: 50px; height: 50px;">
+                            <i class="fa fa-shipping-fast"></i>
+                        </div>
+                        <div class="ml-3">
+                            <h5 class="mb-0">{{__('homepage.fast_shipping')}}</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="d-flex align-items-center scroll-animation">
+                        <div class="d-flex align-items-center justify-content-center rounded-circle bg-primary text-white" style="width: 50px; height: 50px;">
+                            <i class="fa fa-exchange-alt"></i>
+                        </div>
+                        <div class="ml-3">
+                            <h5 class="mb-0">{{__('homepage.14_days_return')}}</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="d-flex align-items-center scroll-animation">
+                        <div class="d-flex align-items-center justify-content-center rounded-circle bg-primary text-white" style="width: 50px; height: 50px;">
+                            <i class="fa fa-phone-volume"></i>
+                        </div>
+                        <div class="ml-3">
+                            <h5 class="mb-0">{{__('homepage.24_7_support')}}</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <a href="#" class="btn btn-primary mt-3 my-3">{{__('homepage.learn_more')}}</a>
+        </div>
+        <div class="col-lg-6" data-aos="">
+            <div class="position-relative" style="height: 100%; min-height: 400px;">
+                <img class="img-fluid w-100 h-100" src="{{asset('website/assets/img/pexels-pixabay-159293.jpg')}}" alt="About Us" style="object-fit: cover; border-radius: 5px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Why Choose Us End -->
+<!-- Vendor End -->
 @endsection

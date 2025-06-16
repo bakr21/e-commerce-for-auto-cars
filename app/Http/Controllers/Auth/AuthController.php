@@ -5,9 +5,10 @@ namespace App\Http\Controllers\Auth;
 use App\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Http\Requests\StoreRegisterRequest;
-use App\Http\Requests\StoreLoginRequest;
-use App\Mail\WelcomeEmail;
+use App\Http\Requests\Admin\StoreRegisterRequest;
+use App\Http\Requests\Admin\StoreLoginRequest;
+use App\Jobs\SendWelcomeEmailJob;
+use App\Jobs\SendPasswordResetLinkJob;
 use App\Models\Country;
 use App\Models\CustomerAddress;
 use App\Models\Order;
@@ -17,9 +18,13 @@ use App\Models\Wishlist;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 use App\Models\Cart;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
+use Illuminate\Auth\Events\PasswordReset;
+
 
 
 class AuthController extends Controller
@@ -27,7 +32,17 @@ class AuthController extends Controller
     public function __construct()
     {
         // Pages that can be accessed without logging in
-        $this->middleware('auth')->except(['login', 'loginAction','register', 'registerSave','logout']);
+        $this->middleware('auth')->except([
+            'login',
+            'loginAction',
+            'register',
+            'registerSave',
+            'logout',
+            'forgotPassword',
+            'processForgetPassword',
+            'resetPassword',
+            'processResetPassword'
+        ]);
     }
 
     public function register()
@@ -35,8 +50,9 @@ class AuthController extends Controller
     return view('auth.register');
     }
 
-    
+
     public function registerSave(StoreRegisterRequest $request) {
+
         $user = User::create([
             'name'      => $request->name,
             'email'     => $request->email,
@@ -45,27 +61,32 @@ class AuthController extends Controller
             'region'    => $request->region,
             'type'      => "0"
         ]);
-    
+
         if (!$user) {
             return back()->withErrors(['error' => 'Failed to register user.']);
         }
-        
+
         try {
-            Mail::to($user->email)->send(new WelcomeEmail($user));
+            // Since we're using sync queue driver in development, this will send the email immediately
+            SendWelcomeEmailJob::dispatch($user);
+
+            // For debugging, let's also log that we attempted to send the email
+            \Illuminate\Support\Facades\Log::info('Welcome email dispatched for user: ' . $user->email);
         } catch (\Exception $e) {
-            return back()->withErrors(['email' => 'Failed to send welcome email.']);
+            // Log the error but don't stop the registration process
+            \Illuminate\Support\Facades\Log::error('Failed to send welcome email: ' . $e->getMessage());
         }
-        
-    
+        $user->sendEmailVerificationNotification();
+        event(new Registered($user));
         Auth::login($user);
 
-    if ($user->type === 'admin') {
-        return redirect()->route('admin.dashboard');
+        if ($user->type === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
+
+        return redirect()->route('home');
     }
 
-    return redirect()->route('home');
-    }
-    
 
     public function login (){
         return view('auth.login');
@@ -73,25 +94,27 @@ class AuthController extends Controller
 
     public function loginAction(StoreLoginRequest $request)
 {
+    // Attempt to authenticate the user with remember me option
     if (!Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
         throw ValidationException::withMessages([
-            'email' => trans('auth.failed')
+            'email' => __('auth.failed'),
         ]);
     }
 
+    // Regenerate session to prevent session fixation
+    $request->session()->regenerate();
+
     $user = Auth::user();
     if ($user->type === 'admin') {
-        return redirect()->route('admin.dashboard'); // توجيه المسؤول
+        return redirect()->route('admin.dashboard');
     }
 
     return redirect()->intended(route('home'));
-
-
 }
 
 
-    
-    
+
+
     public function logout(Request $request){
         Auth::guard('web')->logout();
 
@@ -109,7 +132,7 @@ class AuthController extends Controller
 
         return view('website.account.profile' , compact('user','countries' , 'customerAddress'));
     }
-    
+
     public function updateprofile(Request $request){
         $userID = Auth::user()->id;
         $validator = Validator::make($request->all(),[
@@ -216,7 +239,7 @@ class AuthController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => 'Product removed from wishlist.'
-            ]); 
+            ]);
         }
     }
 
@@ -225,12 +248,69 @@ class AuthController extends Controller
         return response()->json(['count' => $wishlistCount]);
     }
 
-    public function forgotPassword(){
-        // show forgot password form
+    public function forgotPassword()
+    {
+        return view('auth.forgot-password');
     }
 
-    public function processForgetPassword(){
+    public function processForgetPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ]);
 
+        try {
+            // Since we're using sync queue driver in development, this will send the email immediately
+            SendPasswordResetLinkJob::dispatch($request->email);
+
+            // For debugging, let's also log that we attempted to send the reset link
+            \Illuminate\Support\Facades\Log::info('Password reset link dispatched for: ' . $request->email);
+
+            // Always return a success message to prevent email enumeration
+            return back()->with(['status' => __('passwords.sent')]);
+        } catch (\Exception $e) {
+            // Log the error
+            \Illuminate\Support\Facades\Log::error('Failed to send password reset link: ' . $e->getMessage());
+
+            // Return a generic message to prevent email enumeration
+            return back()->with(['status' => __('passwords.sent')]);
+        }
+    }
+
+    public function resetPassword(Request $request, $token)
+    {
+        return view('auth.reset-password', [
+            'token' => $token,
+            'email' => $request->email
+        ]);
+    }
+
+    public function processResetPassword(Request $request)
+    {
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|min:8|confirmed',
+        ]);
+
+        // Reset the password
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function (User $user, string $password) {
+                $user->forceFill([
+                    'password' => Hash::make($password)
+                ])->setRememberToken(Str::random(60));
+
+                $user->save();
+
+                event(new PasswordReset($user));
+            }
+        );
+
+        // Return the status
+        return $status === Password::PASSWORD_RESET
+            ? redirect()->route('login')->with('status', __($status))
+            : back()->withErrors(['email' => [__($status)]]);
     }
 
 

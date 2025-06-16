@@ -75,7 +75,7 @@
             <img src="{{ asset('path_to_your_logo/logo.png') }}" alt="Website Logo" class="logo">
             <h1>Invoice for Your Order</h1>
         </div>
-        @else 
+        @else
         <div class="header">
             <img src="{{ asset('path_to_your_logo/logo.png') }}" alt="Website Logo" class="logo">
             <h1>You have received an order <strong>{{$mailData['order']->id}}</strong></h1>

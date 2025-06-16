@@ -174,9 +174,9 @@
                             <span class="status online"></span></span>
                         <div class="profilesets">
                             <h6>{{auth()->user()->name ?? 'My Account'}}</h6>
-                            
+
                             <h5>Admin</h5>
-                            
+
                         </div>
                     </div>
                     <hr class="m-0">

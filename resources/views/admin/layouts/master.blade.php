@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-	
+
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
@@ -28,9 +28,9 @@
 </head>
 
 <body>
-    <div id="global-loader">
+    {{-- <div id="global-loader">
         <div class="whirly-loader"> </div>
-    </div>
+    </div> --}}
 
     <div class="main-wrapper">
 
@@ -62,6 +62,9 @@
 
     <script src="{{asset('admin/assets/plugins/owlcarousel/owl.carousel.min.js')}}"></script>
 
+    <script src="{{asset('admin/assets/plugins/countup/jquery.waypoints.min.js')}}"></script>
+    <script src="{{asset('admin/assets/plugins/countup/jquery.missofis-countdown.js')}}"></script>
+    <script src="{{asset('admin/assets/plugins/countup/jquery.counterup.min.js')}}"></script>
 
 	<script src="{{asset('admin/assets/plugins/select2/js/select2.min.js')}}"></script>
 	<script src="{{asset('admin/assets/plugins/select2/js/custom-select.js')}}"></script>
@@ -71,12 +74,13 @@
 
     <script src="{{asset('admin/assets/plugins/summernote/summernote-bs4.min.js')}}"></script>
 
-    
+
     <script src="{{asset('admin/assets/plugins/sweetalert/sweetalert2.all.min.js')}}"></script>
     <script src="{{asset('admin/assets/plugins/sweetalert/sweetalerts.min.js')}}"></script>
-    
+
     <script src="{{asset('admin/assets/js/script.js')}}"></script>
 	<script src="https://kit.fontawesome.com/3f5c27b3b0.js" crossorigin="anonymous"></script>
+
 
 </body>
 

@@ -68,17 +68,17 @@
             </div>
 
             <div class="table-responsive">
-                <table class="table  datanew">
+                <table class="table datanew">
                     <thead>
                         <tr>
                             <th>
                                 <label class="checkboxs">
                                     <input type="checkbox" id="select-all">
-                                    <span class="checkmarks"></span>                                    
+                                    <span class="checkmarks"></span>
                                 </label>
                             </th>
                             <th>#</th>
-                            <th width="20">Customer Name</th>
+                            <th>Customer Name</th>
                             <th>Date</th>
                             <th>Email</th>
                             <th>Phone</th>
@@ -90,7 +90,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($orders as $order) 
+                        @forelse ($orders as $order)
                         <tr>
                             <td>
                                 <label class="checkboxs">
@@ -110,12 +110,18 @@
                                 @elseif ($order->status == 'shipped')
                                 <span class="badges bg-lightyellow">Shipped</span>
                                 @elseif ($order->status == 'pending')
-                                <span class="badges bg-lightred">Pending</span>
-                                @else 
+                                <span class="badges bg-primary">Pending</span>
+                                @else
                                 <span class="badges bg-lightred fw-bold">Cancelled</span>
                                 @endif
                             </td>
-                            <td><span class="badges bg-lightgreen">Paid</span></td>
+                            <td>
+                                @if($order->payment_status == 'paid')
+                                <span class="badges bg-lightgreen">Paid</span>
+                                @else
+                                <span class="badges bg-lightred">Not Paid</span>
+                                @endif
+                            </td>
                             <td>{{$order->grand_total}} EGP</td>
                             <td>{{ $order->shipped_date ? $order->shipped_date : 'N/A' }}</td>
                             <td class="text-center">
@@ -165,7 +171,7 @@
                                 <td colspan="11">No records found</td>
                             </tr>
                         @endforelse
-                        
+
                     </tbody>
                 </table>
             </div>

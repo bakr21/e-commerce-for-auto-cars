@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreBrandRequest;
+use App\Http\Requests\Admin\UpdateBrandRequest;
 use App\Models\Brand;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class BrandController extends Controller
 {
@@ -21,37 +21,23 @@ class BrandController extends Controller
         return view('admin.brands.create');
     }
 
-    public function store(Request $request){
-        $validator = Validator::make($request->all(),[
-            'name' => 'required|string|max:255',
-            'slug' => 'required|string|max:255|unique:brands,slug',
-            
+    public function store(StoreBrandRequest $request){
+        $brand = new Brand;
+        $brand->name    = $request->name;
+        $brand->slug    = $request->slug;
+        $brand->status    = $request->status;
+        // if ($request->hasFile('image')) {
+        //     $brand->image = $request->file('image')->store('public/brand');
+        // }
+        $brand->save();
+        session()->flash('success', 'Brand added successfully');
+        return response()->json([
+            'status' => true,
         ]);
-
-        if ($validator->passes()) {
-            $brand = new Brand;
-            $brand->name    = $request->name;
-            $brand->slug    = $request->slug;
-            $brand->status    = $request->status;
-            // if ($request->hasFile('image')) {
-            //     $brand->image = $request->file('image')->store('public/brand');
-            // }
-            $brand->save();
-            session()->flash('success', 'Brand added successfully');
-            return response()->json([
-                'status' => true,
-            ]);
-    
-        } else {
-            return response()->json([
-                'status' => false,
-                'errors' => $validator->errors()
-            ]);
-        }
 
     }
 
-    public function edit($id,Request $request){
+    public function edit($id){
         $brand = Brand::find($id);
 
         if (empty($brand)){
@@ -62,7 +48,7 @@ class BrandController extends Controller
         return view('admin.brands.edit',compact('brand'));
     }
 
-    public function update($id,Request $request){
+    public function update($id, UpdateBrandRequest $request){
         $brand = Brand::find($id);
 
         if (empty($brand)){
@@ -73,32 +59,17 @@ class BrandController extends Controller
             ]);
         }
 
-        $validator = Validator::make($request->all(),[
-            'name' => 'required|string|max:255',
-            'slug' => 'required|string|max:255|unique:brands,slug,'.$brand->id.',id',
-            
+        $brand->name    = $request->name;
+        $brand->slug    = $request->slug;
+        $brand->status    = $request->status;
+        // if ($request->hasFile('image')) {
+        //     $brand->image = $request->file('image')->store('public/brand');
+        // }
+        $brand->save();
+        session()->flash('success', 'Brand update successfully');
+        return response()->json([
+            'status' => true,
         ]);
-
-        if ($validator->passes()) {
-
-            $brand->name    = $request->name;
-            $brand->slug    = $request->slug;
-            $brand->status    = $request->status;
-            // if ($request->hasFile('image')) {
-            //     $brand->image = $request->file('image')->store('public/brand');
-            // }
-            $brand->save();
-            session()->flash('success', 'Brand update successfully');
-            return response()->json([
-                'status' => true,
-            ]);
-    
-        } else {
-            return response()->json([
-                'status' => false,
-                'errors' => $validator->errors()
-            ]);
-        }
     }
 
     public function destroy($id){

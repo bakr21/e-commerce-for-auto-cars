@@ -4,9 +4,11 @@ namespace App\Http\Controllers\website;
 use App\Models\Cart;
 use App\Models\Product;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\Website\AddToCartRequest;
+use App\Http\Requests\Website\UpdateCartRequest;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+
 
 class AddToCartController extends Controller
 {
@@ -19,113 +21,99 @@ class AddToCartController extends Controller
     }
 
     public function cartCount() {
-        $cart_count = Cart::where('user_id', Auth::id())->count();
+        $cart_count = Cart::where('user_id', Auth::id())->sum('qty');
         return response()->json(['cart_count' => $cart_count]);
     }
 
 
-    public function addToCart(Request $request)
-{
-    $product_id = $request->input('product_id');
-    $qty = $request->input('quantity', 1);  // الكمية ثابتة 1 إذا لم يتم تحديدها
-    $user_id = Auth::id();
 
-    if (Auth::check()) {
+    public function addToCart(AddToCartRequest $request)
+    {
+        $product_id = $request->input('product_id');
+        $qty = $request->input('quantity', 1);
+        $user_id = Auth::id();
         $product = Product::find($product_id);
-        
-        // التأكد من وجود المنتج
-        if ($product) {
-            // التأكد من أن الكمية المطلوبة متوفرة في المخزون
-            if ($qty > $product->qty) {
-                return response()->json([
-                    'msg' => 'The requested quantity is not available. Available quantity: ' . $product->qty,
-                    'available_qty' => $product->qty
-                ]);
-            }
 
-            // البحث عن المنتج في العربة الحالية للمستخدم
-            $cartItem = Cart::where('product_id', $product_id)->where('user_id', $user_id)->first();
-            
-            if ($cartItem) {
-                // تحديث الكمية إذا كان المنتج موجود بالفعل في العربة
-                $cartItem->qty += $qty;
-                $cartItem->save();
-                return response()->json([
-                    'icon' => 'success', // نوع الأيقونة
-                    'msg' => 'Quantity updated successfully',
-                    'product_name' => $product->name,
-                    'price' => $product->selling_price
-                ]);
-            } else {
-                // إضافة المنتج إلى العربة إذا لم يكن موجود
-                Cart::create([
-                    'user_id' => $user_id,
-                    'product_id' => $product_id,
-                    'qty' => $qty,
-                    'name' => $product->name,
-                    'selling_price' => $product->selling_price
-                ]);
-                return response()->json([
-                    'icon' => 'success', 
-                    'msg' => $product->name . " Added to cart successfully",
-                    'product_name' => $product->name,
-                    'price' => $product->selling_price
-                ]);
-            }
-        } else {
+        // التأكد من وجود المنتج
+        if (!$product) {
             return response()->json([
                 'icon' => 'error',
-                'msg' => 'Product not found'
+                'msg' => __('cart.product_not_found')
             ]);
         }
-    } else {
-        return response()->json([
-            'icon' => 'info',
-            'msg' => 'Please <a href="' . route('login') . '">login</a> and continue to your page.'
-        ]);
+
+        // التأكد من أن الكمية المطلوبة متوفرة في المخزون
+        if ($qty > $product->qty) {
+            return response()->json([
+                'msg' => __('cart.qty_not_available', ['qty' => $product->qty]),
+                'available_qty' => $product->qty
+            ]);
+        }
+
+        // البحث عن المنتج في العربة الحالية للمستخدم
+        $cartItem = Cart::where('product_id', $product_id)->where('user_id', $user_id)->first();
+
+        if ($cartItem) {
+            // تحديث الكمية إذا كان المنتج موجود بالفعل في العربة
+            $cartItem->qty += $qty;
+            $cartItem->save();
+            return response()->json([
+                'icon' => 'success',
+                'msg' => __('cart.qty_updated'),
+                'product_name' => $product->name,
+                'price' => $product->selling_price
+            ]);
+        } else {
+            // إضافة المنتج إلى العربة إذا لم يكن موجود
+            Cart::create([
+                'user_id' => $user_id,
+                'product_id' => $product_id,
+                'qty' => $qty,
+                'name' => $product->name,
+                'selling_price' => $product->selling_price
+            ]);
+            return response()->json([
+                'icon' => 'success',
+                'msg' => __('cart.added_successfully', ['product' => $product->name]),
+                'product_name' => $product->name,
+                'price' => $product->selling_price
+            ]);
+        }
     }
-}
 
-public function update(Request $request)
+public function update(UpdateCartRequest $request)
 {
+    Log::info('Request received:', $request->all());
 
-// البحث عن المنتج في عربة التسوق
-$cart = Cart::where('user_id', Auth::id())
-            ->where('id', $request->id)
-            ->first();
+    $cart = Cart::where('user_id', Auth::id())
+                ->where('product_id', $request->id) // استخدام product_id بدلاً من id
+                ->first();
 
-if ($cart) {
-    // تحديث الكمية
-    $cart->qty = $request->qty;
-    $cart->save();
+    if (!$cart) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Product not found in cart.'
+        ], 404);
+    }
 
+    $cart->update(['qty' => $request->qty]);
 
-    // حساب الإجمالي الجزئي للمنتج
     $newTotalPrice = $cart->qty * $cart->product->selling_price;
+    $cartTotal = $this->calculateCartTotal();
 
-    // حساب الإجمالي الكلي لعربة التسوق
-    $cartTotal = Cart::where('user_id', Auth::id())->sum(function ($item) {
-        return $item->qty * $item->product->selling_price;
-    });
-
-    // إرجاع الاستجابة
     return response()->json([
+        'success' => true,
         'newTotalPrice' => $newTotalPrice,
-        'cartTotal' => $cartTotal
+        'cartTotal' => $cartTotal,
+        'message' => 'Cart updated successfully.'
     ]);
 }
 
-// إذا لم يتم العثور على المنتج
-return response()->json(['error' => 'المنتج غير موجود'], 404);
-}
+
 public function destroy($id) {
         $cart = Cart::where(['id'=>$id,'user_id'=>Auth::id()])->first();
         $cart->delete();
-        return redirect()->back()->with('success','product deleted successfully from cart');
+        return redirect()->back()->with('success', __('cart.product_deleted_from_cart'));
     }
-    
-
-    
-
 
 }

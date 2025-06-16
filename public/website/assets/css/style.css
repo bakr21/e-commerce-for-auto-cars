@@ -7274,7 +7274,7 @@ button.bg-dark:focus {
 }
 
 .image-trend-category{
-  height: 100px; 
+  height: 100px;
   width: 100px;
 }
 
@@ -7284,13 +7284,13 @@ button.bg-dark:focus {
 }
 
 .image-Custom {
-  height: 250px; 
+  height: 250px;
   width: 285px;
   min-width: 100%;
 }
 
 .image-product {
-  height: 375px; 
+  height: 375px;
   width:100%;
 }
 
@@ -9700,7 +9700,7 @@ a.text-dark:hover, a.text-dark:focus {
 }
 
 .product-item .btn:hover {
-  color: #FFD333 !important;
+  color: #FFFFFF !important;
 }
 
 .table.table-borderless thead tr,
@@ -9738,4 +9738,222 @@ a.text-dark:hover, a.text-dark:focus {
 .swal2-cancel {
   background-color: #f44336 !important;
   color: white !important;
+}
+
+.rating {
+	direction: rtl;
+	unicode-bidi: bidi-override;
+	color: #ddd; /* Personal choice */
+    font-size: 8px;
+    margin-left: -15px;
+}
+.rating input {
+	display: none;
+}
+.rating label:hover,
+.rating label:hover ~ label,
+.rating input:checked + label,
+.rating input:checked + label ~ label {
+	color: #ffc107; /* Personal color choice. Lifted from Bootstrap 4 */
+    font-size: 8px;
+}
+
+
+.front-stars, .back-stars, .star-rating {
+    display: flex;
+  }
+
+  .star-rating {
+    align-items: left;
+    font-size: 1.5em;
+    justify-content: left;
+    margin-left: -5px;
+  }
+
+  .back-stars {
+    color: #CCC;
+    position: relative;
+  }
+
+  .front-stars {
+    color: #FFBC0B;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    transition: all 0.5s;
+  }
+
+
+  .percent {
+    color: #bb5252;
+    font-size: 1.5em;
+  }
+
+/* Custom Styles for Products */
+
+/* Category and Brand Links */
+.text-muted.small a {
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.text-muted.small a:hover {
+    color: #FFD333 !important;
+    text-decoration: underline;
+}
+
+/* Product Card Styles */
+.product-item {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.product-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.product-img {
+    position: relative;
+    overflow: hidden;
+}
+
+.product-img img {
+    transition: all 0.5s ease;
+}
+
+.product-item:hover .product-img img {
+    transform: scale(1.05);
+}
+
+.product-action {
+    position: absolute;
+    bottom: -50px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.product-item:hover .product-action {
+    bottom: 20px;
+    opacity: 1;
+}
+
+.btn-square {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.btn-square:hover {
+    transform: translateY(-3px);
+}
+
+/* Star Rating Colors */
+.back-stars {
+    color: #f0f0f0;
+}
+
+.front-stars {
+    color: #FFD333;
+}
+
+/* Product Details */
+.product-details h3 {
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.product-details .price {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #3D464D;
+}
+
+.product-details .old-price {
+    text-decoration: line-through;
+    color: #6c757d;
+    margin-left: 10px;
+}
+
+/* Product Badge */
+.product-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 1;
+    padding: 5px 10px;
+    border-radius: 3px;
+    font-weight: 500;
+}
+
+.badge-discount {
+    background-color: #dc3545;
+    color: white;
+}
+
+.badge-new {
+    background-color: #28a745;
+    color: white;
+}
+
+.badge-featured {
+    background-color: #007bff;
+    color: white;
+}
+
+/* Product Name Height */
+.product-name {
+    display: block;
+    height: 40px;
+    overflow: hidden;
+    margin-bottom: 5px;
+}
+
+/* Category and Brand Info */
+.product-info {
+    margin-top: 5px;
+    margin-bottom: 10px;
+    font-size: 0.85rem;
+}
+
+/* Button Styles */
+.btn-product {
+    border-radius: 4px;
+    padding: 8px 15px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-product:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.slide-up {
+    animation: slideUp 0.5s ease-in-out;
 }

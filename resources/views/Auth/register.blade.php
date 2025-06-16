@@ -1,46 +1,72 @@
 @extends('website.layouts.master')
-@section('TitlePage' , 'Register ')
+@section('TitlePage', __('register.register'))
 @section('content')
-        <div class="container">
-            <div class="login-form shadow-sm p-5 bg-body rounded">    
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-6">
+            <div class="shadow-sm p-5 bg-body rounded">
                 <form action="{{route('register.save')}}" method="POST">
                     @csrf
-                    <h4 class="modal-title pb-3">Register Now</h4>
+                    <h4 class="modal-title pb-3">{{ __('register.create_your_account') }}</h4>
+                    <p class="text-muted mb-4">{{ __('register.join_us_today') }}</p>
                     <div class="form-group">
-                        <label>Full Name</label>
-                        <input type="text" class="form-control" name="name" placeholder="Enter your full name" value="{{old('name')}}">
+                        <label>{{ __('register.name') }}</label>
+                        <input type="text" class="form-control" name="name" placeholder="{{ __('register.name') }}" value="{{old('name')}}">
                         @error('name')
+                        <p class="text-danger">
+                            {{$message}}
+                        </p>
+                        @enderror
+                    </div>
+                    <div class="form-group">
+                        <label>{{ __('register.email') }}</label>
+                        <input type="text" class="form-control" name="email" placeholder="{{ __('register.email') }}" value="{{old('email')}}">
+                        @error('email')
                         <div class="text-danger">
                             {{$message}}
                         </div>
                         @enderror
                     </div>
                     <div class="form-group">
-                        <label>Email</label>
-                        <input type="text" class="form-control" name="email" placeholder="Enter your email address" value="{{old('email')}}">
-                        @error('email')
+                        <label>{{ __('address.address') }}</label>
+                        <textarea class="form-control" name="address" placeholder="{{ __('address.enter_address') }}">{{old('address')}}</textarea>
+                        @error('address')
                         <div class="text-danger">
                             {{$message}}
                         </div>
-                    @enderror
+                        @enderror
                     </div>
                     <div class="form-group">
-                        <label>Address</label>
-                        <textarea class="form-control" name="address"
-                        placeholder="Enter Address">{{old('address')}}</textarea>
-                    @error('address')
-                    <div class="text-danger">
-                        {{$message}}
-                    </div>
-                    @enderror
-                    </div>
-                    <div class="form-group">
-                        <label >Region</label>
+                        <label>{{ __('address.region') }}</label>
                         <select class="form-control js-example-basic-single select2" name="region">
-                            <option selected="selected">Select Region - Egypt</option>
+                            <option selected="selected" disabled>{{ __('address.select_region') }}</option>
+                            <option value="cairo">Cairo - Egypt</option>
+                            <option value="giza">Giza - Egypt</option>
                             <option value="alex">Alexandria - Egypt</option>
-                            <option value="damn">Dam - Egypt</option>
-                            <option value="dand">Dandara - Egypt</option>
+                            <option value="aswan">Aswan - Egypt</option>
+                            <option value="asuit">Asyut - Egypt</option>
+                            <option value="beheira">Beheira - Egypt</option>
+                            <option value="beni-suef">Beni Suef - Egypt</option>
+                            <option value="dakahlia">Dakahlia - Egypt</option>
+                            <option value="damietta">Damietta - Egypt</option>
+                            <option value="fayoum">Fayoum - Egypt</option>
+                            <option value="gharbia">Gharbia - Egypt</option>
+                            <option value="ismailia">Ismailia - Egypt</option>
+                            <option value="kafr-el-sheikh">Kafr El Sheikh - Egypt</option>
+                            <option value="luxor">Luxor - Egypt</option>
+                            <option value="matruh">Matruh - Egypt</option>
+                            <option value="minya">Minya - Egypt</option>
+                            <option value="monufia">Monufia - Egypt</option>
+                            <option value="new-valley">New Valley - Egypt</option>
+                            <option value="north-sinai">North Sinai - Egypt</option>
+                            <option value="port-said">Port Said - Egypt</option>
+                            <option value="qalyubia">Qalyubia - Egypt</option>
+                            <option value="qena">Qena - Egypt</option>
+                            <option value="red-sea">Red Sea - Egypt</option>
+                            <option value="sharqia">Sharqia - Egypt</option>
+                            <option value="sohag">Sohag - Egypt</option>
+                            <option value="south-sinai">South Sinai - Egypt</option>
+                            <option value="suez">Suez - Egypt</option>
                         </select>
                         @error('region')
                         <div class="text-danger">
@@ -49,9 +75,9 @@
                         @enderror
                     </div>
                     <div class="form-group">
-                        <label>Password</label>
+                        <label>{{ __('register.password') }}</label>
                         <div class="pass-group">
-                            <input type="password" name="password"  class="form-control" placeholder="Enter your password">
+                            <input type="password" name="password" class="form-control" placeholder="{{ __('register.password') }}">
                         </div>
                         @error('password')
                         <div class="text-danger">
@@ -60,18 +86,19 @@
                         @enderror
                     </div>
                     <div class="form-group">
-                        <label >Confirm Password</label>
-                        <input type="password" class="form-control" name="password_confirmation" placeholder="Confirm password" />
+                        <label>{{ __('register.confirm_password') }}</label>
+                        <input type="password" class="form-control" name="password_confirmation" placeholder="{{ __('register.confirm_password') }}" />
                     </div>
                     <div class="form-group small">
-                        <a href="#" class="forgot-link">Forgot Password?</a>
-                    </div> 
-                    <button type="submit" class="btn btn-dark btn-block btn-lg" value="Register">Register</button>
-                </form>			
-                
-                <div class="text-center mt-3">Already have an account? <a href="{{ route('login')}}" class="fw-bold hover-a">Login Now</a></div>
+                        <a href="{{ route('password.request') }}" class="forgot-link">{{ __('login.forgot_password') }}</a>
+                    </div>
+                    <button type="submit" class="btn btn-dark btn-block btn-lg" value="Register">{{ __('register.register') }}</button>
+                </form>
+                <div class="text-center mt-3">{{ __('register.already_have_account') }} <a href="{{ route('login')}}" class="fw-bold hover-a">{{ __('register.login_here') }}</a></div>
             </div>
         </div>
+    </div>
+</div>
 
 @endsection
 {{-- <!DOCTYPE html>
@@ -111,7 +138,7 @@
                         <div class="login-logo">
                             <img src="{{asset('admin/assets/img/logo.png')}}" alt="img">
                         </div>
-                        
+
                         <div class="login-userheading">
                             <h3>Create an Account</h3>
                             <h4>Continue where you left off</h4>
@@ -123,7 +150,7 @@
                             <div class="form-addons">
                                 <input type="text" name="name" placeholder="Enter your full name" value="{{old('name')}}">
                                 <img src="{{asset('admin/assets/img/icons/users1.svg')}}" alt="img">
-                            </div> 
+                            </div>
                             @error('name')
                                 <div class="text-danger">
                                     {{$message}}

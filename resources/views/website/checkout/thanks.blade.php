@@ -4,15 +4,15 @@
     <div class="container">
         <div class="row justify-content-center mt-5">
             <div class="col-md-8 text-center">
-                <h1>Thank You for Your Order!</h1>
-                <p class="lead">We appreciate your business. Your order details are as follows:</p>
+                <h1>{{__('checkout.thank_you_for_your_order')}}</h1>
+                <p class="lead">{{__('checkout.order_details_are_as_follows:')}}</p>
                 <div class="bg-light mt-4 border border-opacity-10">
                     <div class="card-body">
-                        <h5 class="card-title">Order #{{ $id }}</h5>
-                        <p class="card-text">Notes: The order will be received after 4 days.</p>
-                        <p class="card-text">Total: {{ $order->grand_total }} EGP</p>
-                        <p class="card-text">We have sent you the invoice details to your email.</p>
-                        <a href="{{ route('website.shop')}}" class="btn btn-primary mt-3">Continue Shopping</a>
+                        <h5 class="card-title">{{__('checkout.order_id')}} #ORD{{ $id }}</h5>
+                        <p class="card-text">{{ __('checkout.notes') }}</p>
+                        <p class="card-text">{{ __('checkout.total', ['amount' => $order->grand_total]) }}</p>
+                        <p class="card-text">{{ __('checkout.invoice_sent') }}</p>
+                        <a href="{{ route('website.shop')}}" class="btn btn-primary mt-3">{{ __('checkout.continue_shopping') }}</a>
                     </div>
                 </div>
             </div>

@@ -108,7 +108,12 @@
                                                 <font style="vertical-align: inherit;">
                                                     <font
                                                         style="vertical-align: inherit;font-size: 14px;color:#2E7D32;font-weight: 400;">
-                                                        Paid</font>
+                                                        @if ($order->payment_status == 'paid')
+                                                        <span class="text-success">Paid</span>
+                                                        @else
+                                                        <span class="text-danger">Not Paid</span>
+                                                        @endif
+                                                    </font>
                                                 </font><br>
                                                 <font style="vertical-align: inherit;">
                                                     @if ($order->status == 'pending')
@@ -173,6 +178,10 @@
                         @endforelse
                     </tbody>
                 </table>
+                @if ($order->notes)
+                <br>
+                <p><span class="fw-bold">Notes:</span> {{ $order->notes}}</p>
+                @endif
             </div>
             <div class="container">
                 <div class="row">
@@ -199,6 +208,13 @@
                                     <option value="shipped" {{($order->status == 'shipped') ? 'selected' : ''}}>shipped</option>
                                     <option value="delivered" {{($order->status == 'delivered') ? 'selected' : ''}}>delivered</option>
                                     <option value="cancelled" {{($order->status == 'cancelled') ? 'selected' : ''}}>cancelled</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Payment Status</label>
+                                <select name="payment_status" id="payment_status" class="select">
+                                    <option value="paid" {{($order->payment_status == 'paid') ? 'selected' : ''}}>Paid</option>
+                                    <option value="not paid" {{($order->payment_status == 'not paid') ? 'selected' : ''}}>Not Paid</option>
                                 </select>
                             </div>
                             <button type="submit" class="btn btn-primary btn-sm me-2">Update</button>

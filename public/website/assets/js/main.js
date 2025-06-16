@@ -1,6 +1,6 @@
 (function ($) {
     "use strict";
-    
+
     // Dropdown on mouse hover
     $(document).ready(function () {
         function toggleNavbarMethod() {
@@ -17,8 +17,8 @@
         toggleNavbarMethod();
         $(window).resize(toggleNavbarMethod);
     });
-    
-    
+
+
     // Back to top button
     $(window).scroll(function () {
         if ($(this).scrollTop() > 100) {
@@ -40,6 +40,7 @@
         nav: false,
         autoplay: true,
         smartSpeed: 1000,
+        rtl: true,
         responsive: {
             0:{
                 items:2
@@ -89,7 +90,7 @@
     });
 
 
-    
+
     // Product Quantity
     $('.quantity button').on('click', function () {
         var button = $(this);
@@ -105,7 +106,9 @@
         }
         button.parent().parent().find('input').val(newVal);
     });
-    
+
+
+
 })(jQuery);
 
 

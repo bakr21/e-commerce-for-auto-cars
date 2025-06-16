@@ -3,10 +3,8 @@
 namespace App\Http\Controllers\website;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Website\StoreMessageRequest;
 use App\Models\Message;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 
 class ContactController extends Controller
 {
@@ -16,20 +14,13 @@ class ContactController extends Controller
         return view('admin.messages.index', compact('messages'));
     }
 
-    public function store(Request $request)
+    public function store(StoreMessageRequest $request)
     {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email',
-            'phone' => 'required',
-            'subject' => 'required',
-            'message' => 'required',
-        ]);
 
         Message::create($request->all());
 
         return response()->json(['success' => 'Your message has been sent successfully!']);
-    
+
     }
 
     public function show($id)
@@ -48,7 +39,7 @@ class ContactController extends Controller
                 'status' => true,
             ]);
         }
-        
+
         session()->flash('success', 'Message deleded successfully');
         return response()->json([
             'status' => true,

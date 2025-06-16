@@ -1,5 +1,5 @@
 @extends('admin.layouts.master')
-@section('TitlePage', 'catdasn')
+@section('TitlePage', 'categories')
 @section('content')
 <div class="content">
     <div class="page-header">
@@ -41,7 +41,7 @@
                 </div>
             </div>
 
-            
+
 
             <div class="table-responsive">
                 <table class="table ">
@@ -58,7 +58,7 @@
                     <tbody>
                         @forelse ($categories as $category)
                         <tr>
-                            
+
                             <th scope="row">{{ $loop->iteration }}</th>
                             <td class="productimgname">
                                 <a class="product-img">
@@ -89,7 +89,7 @@
                                 <a class="me-3" href="{{route('categories.edit',$category->id)}}">
                                     <img src="{{asset('admin/assets/img/icons/edit.svg')}}" alt="img">
                                 </a>
-                                
+
                                 @include('admin.categories.delete_modal',['type'=>'category','data'=>$category,'routes'=>'categories.destroy'])
 
                             </td>

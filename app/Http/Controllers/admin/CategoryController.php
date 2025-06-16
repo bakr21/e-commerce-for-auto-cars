@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Http\Requests\StoreCategoryRequest;
-use App\Http\Requests\UpdateCategoryRequest;
+use App\Http\Requests\Admin\StoreCategoryRequest;
+use App\Http\Requests\Admin\UpdateCategoryRequest;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Category;
 
@@ -33,7 +32,7 @@ class CategoryController extends Controller
      */
     public function store(StoreCategoryRequest $request)
     {
-        
+
         $validated = $request->validated();
         Category::create([
             'name' => $request->name,
@@ -52,7 +51,7 @@ class CategoryController extends Controller
         return redirect()->route('categories.index');
     }
 
-    
+
 
     /**
      * Display the specified resource.

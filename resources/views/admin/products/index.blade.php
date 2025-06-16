@@ -66,7 +66,7 @@
                     <tbody>
                         @forelse ($products as $product)
 
-                        
+
                         <tr>
                             <td>
                                 <label class="checkboxs">
@@ -111,7 +111,7 @@
                                 @include('admin.products.delete_modal',['type'=>'product','data'=>$product,'routes'=>'products.destroy'])
                             </td>
                         </tr>
-                        
+
                         @empty
                         @endforelse
                     </tbody>

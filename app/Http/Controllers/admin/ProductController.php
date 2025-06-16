@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreProductRequest;
-use App\Http\Requests\UpdateProductRequest;
+use App\Http\Requests\Admin\StoreProductRequest;
+use App\Http\Requests\Admin\UpdateProductRequest;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\Product;
@@ -39,25 +39,32 @@ class ProductController extends Controller
      */
     public function store(StoreProductRequest $request)
     {
-        $validated = $request->validated();
+        $request->validated();
         $product = new Product();
-        
-        $product->name = $request->name;
+
+        $product->setTranslation('name', 'ar', $request->input('name.ar'));
+        $product->setTranslation('name', 'en', $request->input('name.en'));
         $product->category_id = $request->category_id;
         $product->brand_id = $request->brand_id;
         $product->slug = $request->slug;
-        $product->short_description = $request->short_description;
-        $product->description = $request->description;
-        $product->status = $request->status ? '1' : '0';
-        $product->trend = $request->trend ? '1' : '0';
+        $product->setTranslation('short_description', 'ar', $request->input('short_description.ar'));
+        $product->setTranslation('short_description', 'en', $request->input('short_description.en'));
+        $product->setTranslation('description', 'ar', $request->input('description.ar'));
+        $product->setTranslation('description', 'en', $request->input('description.en'));
+        $product->status = $request->status;
+        $product->trend = $request->trend;
         $product->price = $request->price;
         $product->selling_price = $request->selling_price;
+        $product->minqty = $request->min_qty;
         $product->qty = $request->qty;
         $product->tax = $request->tax;
-        $product->meta_title = $request->meta_title;
-        $product->meta_description = $request->meta_description;
-        $product->meta_keywords = $request->meta_keywords;
-        
+        $product->setTranslation('meta_title', 'ar', $request->input('meta_title.ar'));
+        $product->setTranslation('meta_title', 'en', $request->input('meta_title.en'));
+        $product->setTranslation('meta_description', 'ar', $request->input('meta_description.ar'));
+        $product->setTranslation('meta_description', 'en', $request->input('meta_description.en'));
+        $product->setTranslation('meta_keywords', 'ar', $request->input('meta_keywords.ar'));
+        $product->setTranslation('meta_keywords', 'en', $request->input('meta_keywords.en'));
+
         $product->save();
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
@@ -91,7 +98,7 @@ class ProductController extends Controller
         $brands = Brand::select('id', 'name')->get();
         return view('admin.products.edit', compact('product' , 'categories','brands'));
     }
-    
+
 
 
     /**
@@ -99,27 +106,34 @@ class ProductController extends Controller
      */
     public function update(UpdateProductRequest $request, Product $product)
 {
-    $validated = $request->validated();
+    $request->validated();
 
-    $product->name = $request->name;
+    $product->setTranslation('name', 'ar', $request->input('name.ar'));
+    $product->setTranslation('name', 'en', $request->input('name.en'));
     $product->category_id = $request->category_id;
     $product->brand_id = $request->brand_id;
     $product->slug = $request->slug;
-    $product->short_description = $request->short_description;
-    $product->description = $request->description;
-    $product->status = $request->status ? '1' : '0';
-    $product->trend = $request->trend ? '1' : '0';
+    $product->setTranslation('short_description', 'ar', $request->input('short_description.ar'));
+    $product->setTranslation('short_description', 'en', $request->input('short_description.en'));
+    $product->setTranslation('description', 'ar', $request->input('description.ar'));
+    $product->setTranslation('description', 'en', $request->input('description.en'));
+    $product->status = $request->status;
+    $product->trend = $request->trend;
     $product->price = $request->price;
     $product->selling_price = $request->selling_price;
+    $product->minqty = $request->min_qty;
     $product->qty = $request->qty;
     $product->tax = $request->tax;
-    $product->meta_title = $request->meta_title;
-    $product->meta_description = $request->meta_description;
-    $product->meta_keywords = $request->meta_keywords;
+    $product->setTranslation('meta_title', 'ar', $request->input('meta_title.ar'));
+    $product->setTranslation('meta_title', 'en', $request->input('meta_title.en'));
+    $product->setTranslation('meta_description', 'ar', $request->input('meta_description.ar'));
+    $product->setTranslation('meta_description', 'en', $request->input('meta_description.en'));
+    $product->setTranslation('meta_keywords', 'ar', $request->input('meta_keywords.ar'));
+    $product->setTranslation('meta_keywords', 'en', $request->input('meta_keywords.en'));
 
     $product->save();
 
-    
+
     if ($request->hasFile('images')) {
         foreach ($request->file('images') as $image) {
             $path = $image->store('public/products');

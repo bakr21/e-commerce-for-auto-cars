@@ -24,11 +24,11 @@ class OrderController extends Controller
             $orders = $orders->orWhere('orders.id','like','%'.$request->keywords.'%');
         }
 
-        $orders = $orders->paginate(10);
+        $orders = $orders->latest()->get();
 
         return view('admin.orders.index' , compact(
             'orders'
-        
+
             ));
     }
 
@@ -38,13 +38,14 @@ class OrderController extends Controller
                     ->leftjoin('countries','countries.id','orders.country_id')
                     ->first();
         $orderItems = OrderItem::where('order_id', $orderId)->get();
-        
+
         return view('admin.orders.detail', compact('order','orderItems'));
     }
 
     public function updateStatus(Request $request ,$orderId){
         $order = Order::findOrFail($orderId);
         $order->status = $request->status;
+        $order->payment_status = $request->payment_status;
         $order->shipped_date = $request->shipped_date;
 
         $order->save();

@@ -6,9 +6,9 @@
         <div class="row px-xl-5">
             <div class="col-12">
                 <nav class="breadcrumb bg-light mb-30">
-                    <a class="breadcrumb-item text-dark" href="#">Home</a>
-                    <a class="breadcrumb-item text-dark" href="#">Shop</a>
-                    <span class="breadcrumb-item active">Shop Detail</span>
+                    <a class="breadcrumb-item text-dark" href="#">{{__('breadcrumb.home')}}</a>
+                    <a class="breadcrumb-item text-dark" href="#">{{__('breadcrumb.shop')}}</a>
+                    <span class="breadcrumb-item active">{{__('breadcrumb.shop_detail')}}</span>
                 </nav>
             </div>
         </div>
@@ -25,17 +25,17 @@
                 <div id="product-carousel" class="carousel slide" data-ride="carousel">
                     <div class="carousel-inner bg-light">
                         @if($product->images->isEmpty())
-                            <div class="carousel-item active">
+                            <div class=" active">
                                 <img class="image-product" src="{{ asset('admin/assets/img/product/noimage.png') }}" alt="{{ $product->name }}">
                             </div>
                         @else
                             @foreach($product->images as $index => $image)
                                 @if($image && $image->image_path)
-                                    <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
+                                    <div class=" {{ $loop->first ? 'active' : '' }}">
                                         <img class="image-product" src="{{ Storage::url($image->image_path) }}" alt="{{ $product->name }}">
                                     </div>
                                 @else
-                                    <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
+                                    <div class=" {{ $loop->first ? 'active' : '' }}">
                                         <img class="image-product" src="{{ asset('admin/assets/img/product/noimage.png') }}" alt="{{ $product->name }}">
                                     </div>
                                 @endif
@@ -54,30 +54,60 @@
             <div class="col-lg-7 h-auto mb-30">
                 <div class="h-100 bg-light p-30">
                     <h3>{{$product->name}}</h3>
-                    <div class="d-flex mb-3">
-                        <div class="text-primary mr-2">
-                            <small class="fas fa-star"></small>
-                            <small class="fas fa-star"></small>
-                            <small class="fas fa-star"></small>
-                            <small class="fas fa-star-half-alt"></small>
-                            <small class="far fa-star"></small>
-                        </div>
-                        <small class="pt-1">(99 Reviews)</small>
+                    @if($product->selling_price < $product->price)
+                    <div class="badge bg-danger text-white position-absolute" style="top: 10px; left: 10px; z-index: 1; padding: 5px 10px; border-radius: 3px;">
+                        {{ round((($product->price - $product->selling_price) / $product->price) * 100) }}% {{__('product.discount')}}
                     </div>
-                    <a class="btn btn-sm btn-primary mb-3 rounded ps-3 pe-3" href="{{route('website.category_slug' , $product->category->slug)}}">{{$product->category->slug}}</a>
-                    <h3 class="font-weight-semi-bold mb-4">{{$product->selling_price}} EGP<del class="text-muted ml-2">{{$product->price}} EGP</del></h3>
+                    @endif
+                    <div class="d-flex mb-3">
+                        <div class="text-primary star-rating mt-2" title="{{ $product->avgRatingPer }}%">
+                            <div class="back-stars">
+                                <small class="fa fa-star"></small>
+                                <small class="fa fa-star"></small>
+                                <small class="fa fa-star"></small>
+                                <small class="fa fa-star"></small>
+                                <small class="fa fa-star"></small>
+                                <div class="front-stars" style="width: {{ $product->avgRatingPer }}%">
+                                    <small class="fa fa-star"></small>
+                                    <small class="fa fa-star"></small>
+                                    <small class="fa fa-star"></small>
+                                    <small class="fa fa-star"></small>
+                                    <small class="fa fa-star"></small>
+                                </div>
+                            </div>
+                        </div>
+                        <small class="pt-1">
+                            ({{ $product->product_ratings_count }}
+                            {{ $product->product_ratings_count > 1 ? __('product.reviews') : __('product.review') }})
+                        </small>
+
+                    </div>
+                    <div class="d-flex mb-3">
+                        <a class="btn btn-sm btn-primary me-2 rounded ps-3 pe-3" href="{{route('website.category_slug' , $product->category->slug)}}">{{$product->category->name}}</a>
+                        @if($product->brand)
+                        <a class="btn btn-sm btn-outline-primary rounded ps-3 pe-3" href="{{ route('website.shop') }}?brand={{ $product->brand_id }}">{{$product->brand->name}}</a>
+                        @endif
+                    </div>
+                    <h3 class="font-weight-semi-bold mb-4">{{$product->selling_price}} {{__('product.egp')}}
+                        @if($product->selling_price < $product->price)
+                            <del class="text-muted ml-2">{{$product->price}} {{__('product.egp')}}</del>
+                        @endif
+                    </h3>
                     <p class="mb-3">{{$product->short_description}}</p>
                     <div class="mb-3">
-                        <strong class="text-dark mr-3">Available:</strong>                        
+                        <strong class="text-dark mr-1">{{__('product.availability')}}:</strong>
                         @if($product->qty >= $product->minqty)
-                            <small class="badge bg-primary p-2 text-muted">Available</small>
+                            <small class="badge bg-primary p-2 text-muted">{{__('product.available')}}</small>
                         @else
-                            <small class="badge bg-danger p-2">Unavailable Now</small>
+                            <small class="badge bg-danger p-2">{{__('product.unavailable')}}</small>
                         @endif
                     </div>
                     @if(!Auth::check())
-                        <p class="fw-bold">Please <a href="{{ route('login') }}">Login</a> before adding products to the cart </p>
+                        <p class="fw-bold">
+                            {!! __('product.login_prompt', ['link' => '<a href="' . route('login') . '">' . __('product.login') . '</a>']) !!}
+                        </p>
                     @endif
+
                     @if($product->qty >= $product->minqty)
                     <div class="d-flex align-items-center mb-4 pt-2">
                         <div class="input-group quantity mr-3" style="width: 130px;">
@@ -93,27 +123,36 @@
                                 </button>
                             </div>
                         </div>
-                        <a class="btn btn-primary px-3" onclick="addtocart()" ><i class="fa fa-shopping-cart mr-1"></i> Add To Cart</a>
+                        <a class="btn btn-primary px-3" onclick="addtocart()" ><i class="fa fa-shopping-cart mr-1"></i> {{__('product.add_to_cart')}}</a>
                         <input type="hidden" id="product_id" name="product_id" value="{{$product->id}}" />
                     </div>
                     @endif
+                    @php
+                        $productUrl = urlencode(request()->fullUrl());
+                        $productTitle = urlencode($product->name);
+                    @endphp
+
                     <div class="d-flex pt-2">
-                        <strong class="text-dark mr-2">Share on:</strong>
+                        <strong class="text-dark mr-2">{{__('product.share_on')}} :</strong>
                         <div class="d-inline-flex">
-                            <a class="text-dark px-2" href="">
+                            <a class="text-dark px-2" href="https://www.facebook.com/sharer/sharer.php?u={{ $productUrl }}" target="_blank">
                                 <i class="fab fa-facebook-f"></i>
                             </a>
-                            <a class="text-dark px-2" href="">
+                            <a class="text-dark px-2" href="https://api.whatsapp.com/send?text={{ $productTitle }}%20{{ $productUrl }}" target="_blank">
+                                <i class="fab fa-whatsapp"></i>
+                            </a>
+                            <a class="text-dark px-2" href="https://twitter.com/intent/tweet?url={{ $productUrl }}&text={{ $productTitle }}" target="_blank">
                                 <i class="fab fa-twitter"></i>
                             </a>
-                            <a class="text-dark px-2" href="">
+                            <a class="text-dark px-2" href="https://www.linkedin.com/sharing/share-offsite/?url={{ $productUrl }}" target="_blank">
                                 <i class="fab fa-linkedin-in"></i>
                             </a>
-                            <a class="text-dark px-2" href="">
+                            <a class="text-dark px-2" href="https://pinterest.com/pin/create/button/?url={{ $productUrl }}&description={{ $productTitle }}" target="_blank">
                                 <i class="fab fa-pinterest"></i>
                             </a>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -121,16 +160,19 @@
             <div class="col">
                 <div class="bg-light p-30">
                     <div class="nav nav-tabs mb-4">
-                        <a class="nav-item nav-link text-dark active" data-toggle="tab" href="#tab-pane-1">Description</a>
-                        <a class="nav-item nav-link text-dark" data-toggle="tab" href="#tab-pane-2">Information</a>
-                        <a class="nav-item nav-link text-dark" data-toggle="tab" href="#tab-pane-3">Reviews (0)</a>
+                        <a class="nav-item nav-link text-dark active" data-toggle="tab" href="#tab-pane-1">{{__('product.description')}}</a>
+                        {{-- <a class="nav-item nav-link text-dark" data-toggle="tab" href="#tab-pane-2">Information</a> --}}
+                        <a class="nav-item nav-link text-dark" data-toggle="tab" href="#reviews">
+                            {{ __('product.reviews') }} ({{ $product->product_ratings_count }}
+                            {{ $product->product_ratings_count > 1 ? __('product.reviews') : __('product.review') }})
+                        </a>
                     </div>
                     <div class="tab-content">
                         <div class="tab-pane fade show active" id="tab-pane-1">
-                            <h4 class="mb-3">Product Description</h4>
-                            <p>{{$product->description}}</p>
+                            <h4 class="mb-3">{{__('product.description')}}</h4>
+                            <p>{!! $product->description !!}</p>
                         </div>
-                        <div class="tab-pane fade" id="tab-pane-2">
+                        {{-- <div class="tab-pane fade" id="tab-pane-2">
                             <h4 class="mb-3">Additional Information</h4>
                             <p>Eos no lorem eirmod diam diam, eos elitr et gubergren diam sea. Consetetur vero aliquyam invidunt duo dolores et duo sit. Vero diam ea vero et dolore rebum, dolor rebum eirmod consetetur invidunt sed sed et, lorem duo et eos elitr, sadipscing kasd ipsum rebum diam. Dolore diam stet rebum sed tempor kasd eirmod. Takimata kasd ipsum accusam sadipscing, eos dolores sit no ut diam consetetur duo justo est, sit sanctus diam tempor aliquyam eirmod nonumy rebum dolor accusam, ipsum kasd eos consetetur at sit rebum, diam kasd invidunt tempor lorem, ipsum lorem elitr sanctus eirmod takimata dolor ea invidunt.</p>
                             <div class="row">
@@ -148,7 +190,7 @@
                                         <li class="list-group-item px-0">
                                             Takimata ea clita labore amet ipsum erat justo voluptua. Nonumy.
                                         </li>
-                                    </ul> 
+                                    </ul>
                                 </div>
                                 <div class="col-md-6">
                                     <ul class="list-group list-group-flush">
@@ -164,61 +206,113 @@
                                         <li class="list-group-item px-0">
                                             Takimata ea clita labore amet ipsum erat justo voluptua. Nonumy.
                                         </li>
-                                    </ul> 
+                                    </ul>
                                 </div>
                             </div>
-                        </div>
-                        <div class="tab-pane fade" id="tab-pane-3">
+                        </div> --}}
+                        <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
                             <div class="row">
-                                <div class="col-md-6">
-                                    <h4 class="mb-4">1 review for "Product Name"</h4>
-                                    <div class="media mb-4">
-                                        <img src="{{asset('website/assets/img/user.jpg')}}" alt="Image" class="img-fluid mr-3 mt-1" style="width: 45px;">
-                                        <div class="media-body">
-                                            <h6>John Doe<small> - <i>01 Jan 2045</i></small></h6>
-                                            <div class="text-primary mb-2">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star-half-alt"></i>
-                                                <i class="far fa-star"></i>
+                                <div class="col-md-7">
+                                    <form action="{{ route('rating.save', $product->id) }}" name="productRatingForm" id="productRatingForm" method="post">
+                                    @csrf
+                                    <div class="row">
+                                            <h3 class="h4 pb-3">{{__('product.write_review')}}</h3>
+                                            <div class="form-group col-md-6 mb-3">
+                                                <label for="name">{{__('product.name')}}</label>
+                                                <input type="text" class="form-control" name="name" id="name" placeholder="{{__('product.name')}}">
+                                                <p></p>
                                             </div>
-                                            <p>Diam amet duo labore stet elitr ea clita ipsum, tempor labore accusam ipsum et no at. Kasd diam tempor rebum magna dolores sed sed eirmod ipsum.</p>
+                                            <div class="form-group col-md-6 mb-3">
+                                                <label for="email">{{__('product.email')}}</label>
+                                                <input type="text" class="form-control" name="email" id="email" placeholder="{{__('product.email')}}">
+                                                <p></p>
+                                            </div>
+                                            <div class="form-group mb-3">
+                                                <label for="rating">{{__('product.rating')}}</label>
+                                                <br>
+                                                <div class="rating ms-1" id="rating" style="width: 10rem">
+                                                    <input id="rating-5" type="radio" name="rating" value="5"/><label for="rating-5"><i class="fas fa-3x fa-star"></i></label>
+                                                    <input id="rating-4" type="radio" name="rating" value="4"  /><label for="rating-4"><i class="fas fa-3x fa-star"></i></label>
+                                                    <input id="rating-3" type="radio" name="rating" value="3"/><label for="rating-3"><i class="fas fa-3x fa-star"></i></label>
+                                                    <input id="rating-2" type="radio" name="rating" value="2"/><label for="rating-2"><i class="fas fa-3x fa-star"></i></label>
+                                                    <input id="rating-1" type="radio" name="rating" value="1"/><label for="rating-1"><i class="fas fa-3x fa-star"></i></label>
+                                                </div>
+                                                <p></p>
+                                            </div>
+                                            <div class="form-group mb-3">
+                                                <label for="">{{__('product.overall_experience')}}</label>
+                                                <textarea name="comment"  id="comment" class="form-control" cols="30" rows="10" placeholder="{{__('product.overall_experience')}}"></textarea>
+                                                <p></p>
+                                            </div>
+                                            <div>
+                                                @if (!Auth::user())
+                                                    <p class="fw-bold">
+                                                        {!! __('product.must_login', ['link' => '<a href="' . route('login') . '">' . __('product.login') . '</a>']) !!}
+                                                    </p>
+                                                @endif
+                                                <button type="submit" {{ !Auth::user() ? 'disabled' : '' }} class="btn btn-primary">{{__('product.submit')}}</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                </div>
+                                <div class="col-md-5 mt-5">
+                                    <div class="overall-rating mb-3">
+                                        <div class="d-flex">
+                                            <h1 class="h3 pe-3">
+                                                {{ $product->avgRatingPer > 0 ? number_format($product->avgRatingPer / 100, 1) : '0.0' }}
+                                            </h1>
+                                            <div class="star-rating mt-2" title="{{$product->avgRatingPer}}%">
+                                                <div class="back-stars">
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <div class="front-stars" style="width: {{$product->avgRatingPer}}%">
+                                                        <i class="fa fa-star"></i>
+                                                        <i class="fa fa-star"></i>
+                                                        <i class="fa fa-star"></i>
+                                                        <i class="fa fa-star"></i>
+                                                        <i class="fa fa-star"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="pt-2 ps-2">
+                                                ({{ $product->product_ratings_count }}
+                                                {{ $product->product_ratings_count > 1 ? __('product.reviews') : __('product.review') }})
+                                            </div>
                                         </div>
                                     </div>
+
+                                    @foreach ($product->product_ratings as $rating)
+                                        @php $ratingPer = ($rating->rating * 100) / 5; @endphp
+                                        <div class="rating-group mb-4">
+                                            <span><strong>{{ $rating->username }}</strong></span>
+                                            <div class="star-rating mt-2" title="{{$ratingPer}}%">
+                                                <div class="back-stars">
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <div class="front-stars" style="width: {{$ratingPer}}%">
+                                                        <i class="fa fa-star"></i>
+                                                        <i class="fa fa-star"></i>
+                                                        <i class="fa fa-star"></i>
+                                                        <i class="fa fa-star"></i>
+                                                        <i class="fa fa-star"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="my-3">
+                                                <p>{{ $rating->comment }}</p>
+                                            </div>
+                                        </div>
+                                    @endforeach
                                 </div>
-                                <div class="col-md-6">
-                                    <h4 class="mb-4">Leave a review</h4>
-                                    <small>Your email address will not be published. Required fields are marked *</small>
-                                    <div class="d-flex my-3">
-                                        <p class="mb-0 mr-2">Your Rating * :</p>
-                                        <div class="text-primary">
-                                            <i class="far fa-star"></i>
-                                            <i class="far fa-star"></i>
-                                            <i class="far fa-star"></i>
-                                            <i class="far fa-star"></i>
-                                            <i class="far fa-star"></i>
-                                        </div>
-                                    </div>
-                                    <form>
-                                        <div class="form-group">
-                                            <label for="message">Your Review *</label>
-                                            <textarea id="message" cols="30" rows="5" class="form-control"></textarea>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="name">Your Name *</label>
-                                            <input type="text" class="form-control" id="name">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="email">Your Email *</label>
-                                            <input type="email" class="form-control" id="email">
-                                        </div>
-                                        <div class="form-group mb-0">
-                                            <input type="submit" value="Leave Your Review" class="btn btn-primary px-3">
-                                        </div>
-                                    </form>
-                                </div>
+
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -227,73 +321,184 @@
     </div>
     <!-- Shop Detail End -->
 
-    <!-- Products Start -->
-    <div class="container-fluid py-5">
-        <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4">
-            <span class="bg-secondary pr-3">You May Also Like</span>
-        </h2>
-        <div class="row px-xl-5">
-            <div class="col">
-                <div class="owl-carousel related-carousel">
-                    @foreach($trendingProducts as $Product)
-                    <div class="product-item bg-light item">
-                        <div class="product-img position-relative overflow-hidden">
-                            @php
-                            $image = $Product->images->first();
-                            @endphp
-                            @if($image && $image->image_path)
-                                <img class="img-fluid image-Custom" src="{{ Storage::url($image->image_path) }}" alt="{{ $Product->name }}" style="height: 250px; width: 100%;">
-                            @else
-                                <img src="{{ asset('admin/assets/img/product/noimage.png') }}" alt="{{ $Product->name }}" style="height: 250px; width: 100%;" class="img-fluid w-100">
-                            @endif
-                            <div class="product-action">
-                                @if($product->qty >= $product->minqty)
-                                <a class="btn btn-outline-dark btn-square add-to-cart" 
-                                data-product-id="{{ $product->id }}" 
-                                href="javascript:void(0);">
-                                <i class="fa fa-cart-plus"></i></a> 
+    @if($relatedProducts->isNotEmpty())
+    <!-- Other products related to the category Start -->
+        <div class="container-fluid py-5">
+            <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4">
+                <span class="bg-secondary pr-3">{{__('product.related_to_category')}}</span>
+            </h2>
+            <div class="row px-xl-5">
+                @foreach($relatedProducts as $product)
+                    <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
+                        <div class="product-item bg-light mb-4">
+                            <div class="product-img position-relative overflow-hidden">
+                                @php
+                                $image = $product->images->first();
+                                @endphp
+                                @if($image && $image->image_path)
+                                    <img class="img-fluid image-Custom" src="{{ Storage::url($image->image_path) }}" alt="{{ $product->name }}" style="height: 250px; width: 100%;">
                                 @else
-                                <a class="btn btn-outline-dark btn-square"><i class="fa-solid fa-store-slash"></i></a>
+                                    <img src="{{ asset('admin/assets/img/product/noimage.png') }}" alt="{{ $product->name }}" style="height: 250px; width: 100%;" class="img-fluid w-100">
                                 @endif
-                                <a class="btn btn-outline-dark btn-square" onclick="addToWishlist({{$product->id}})" href="javascript:void(0);"><i class="far fa-heart"></i></a>
-                                <a class="btn btn-outline-dark btn-square" href="{{ route('get_product_slug', [$product->category->slug, $product->slug]) }}"><i class="fa-solid fa-eye"></i></a>
+                                @if($product->selling_price < $product->price)
+                                <div class="badge bg-danger text-white position-absolute" style="top: 10px; left: 10px; z-index: 1; padding: 5px 10px; border-radius: 3px;">
+                                    {{ round((($product->price - $product->selling_price) / $product->price) * 100) }}% {{__('product.discount')}}
+                                </div>
+                                @endif
+                                <div class="product-action">
+                                    @if($product->qty >= $product->minqty)
+                                    <a class="btn btn-outline-dark btn-square add-to-cart" data-toggle="tooltip" title="{{__('product.add_to_cart')}}"
+                                    data-product-id="{{ $product->id }}"
+                                    href="javascript:void(0);">
+                                    <i class="fa fa-cart-plus"></i></a>
+                                    @else
+                                    <a class="btn btn-outline-dark btn-square" data-toggle="tooltip" title="{{__('product.unavailable')}}"><i class="fa-solid fa-store-slash"></i></a>
+                                    @endif
+                                    <a class="btn btn-outline-dark btn-square" onclick="addToWishlist({{ $product->id }})" href="javascript:void(0);" data-toggle="tooltip" title="{{__('product.add_wishlist')}}"><i class="far fa-heart"></i></a>
+                                    <a class="btn btn-outline-dark btn-square" href="{{ route('get_product_slug', [$product->category->slug, $product->slug]) }}"data-toggle="tooltip" title="{{__('product.view_deatils')}}"><i class="fa-solid fa-eye"></i></a>
+                                </div>
                             </div>
-                        </div>
-                        <div class="text-center py-4">
-                            <a class="h6 text-decoration-none text-truncate" href="{{ route('get_product_slug', [$Product->category->slug, $Product->slug]) }}">{{ $Product->name }}</a>
-                            <div class="d-flex align-items-center justify-content-center mt-2">
-                                <h5>${{ $Product->price }}</h5>
-                                <h6 class="text-muted ml-2"><del>${{ $Product->price }}</del></h6>
-                            </div>
-                            <div class="d-flex align-items-center justify-content-center mb-1">
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small>(99)</small>
+                            <div class="text-center py-4">
+                                <a class="h6 text-decoration-none" href="{{ route('get_product_slug', [$product->category->slug, $product->slug]) }}" style="display: block; height: 40px; overflow: hidden;">{{ $product->name }}</a>
+                                <div class="d-flex align-items-center justify-content-center mt-1">
+                                    <span class="text-muted small">
+                                        <a href="{{ route('website.category_slug', $product->category->slug) }}" class="text-muted">{{ $product->category->name }}</a>
+                                        @if($product->brand)
+                                            | <a href="{{ route('website.shop') }}?brand={{ $product->brand_id }}" class="text-muted">{{ $product->brand->name }}</a>
+                                        @endif
+                                    </span>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-center mt-2">
+                                    <h5>{{ $product->selling_price }} {{__('product.egp')}}</h5>
+                                    @if($product->selling_price < $product->price)
+                                    <h6 class="text-muted ml-2"><del>{{ $product->price }} {{__('product.egp')}}</del></h6>
+                                    @endif
+                                </div>
+                                <div class="d-flex align-items-center justify-content-center mb-1">
+                                    <div class="back-stars">
+                                        <small class="fa fa-star"></small>
+                                        <small class="fa fa-star"></small>
+                                        <small class="fa fa-star"></small>
+                                        <small class="fa fa-star"></small>
+                                        <small class="fa fa-star"></small>
+                                        <div class="front-stars" style="width: {{ $product->avgRatingPer }}%">
+                                            <small class="fa fa-star"></small>
+                                            <small class="fa fa-star"></small>
+                                            <small class="fa fa-star"></small>
+                                            <small class="fa fa-star"></small>
+                                            <small class="fa fa-star"></small>
+                                        </div>
+                                    </div>
+                                    <small class="pt-1"> ({{ $product->product_ratings_count }})</small>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-center mt-2">
+                                    <a href="{{ route('get_product_slug', [$product->category->slug, $product->slug]) }}" class="btn btn-primary">{{__('main.show_details')}} <i class="fa-solid fa-arrow-right"></i></a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    @endforeach
-                </div>
+                @endforeach
             </div>
         </div>
+    <!-- Other products related to the category End -->
+    @endif
+
+
+    <!-- You May Also Like Start -->
+    <div class="container-fluid py-5">
+        <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4">
+            <span class="bg-secondary pr-3">{{__('product.may_also_like')}}</span>
+        </h2>
+        <div class="row px-xl-5">
+            @foreach($trendingProducts as $product)
+            <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
+                <div class="product-item bg-light mb-4">
+                    <div class="product-img position-relative overflow-hidden">
+                        @php
+                        $image = $product->images->first();
+                        @endphp
+                        @if($image && $image->image_path)
+                            <img class="img-fluid image-Custom" src="{{ Storage::url($image->image_path) }}" alt="{{ $product->name }}" style="height: 250px; width: 100%;">
+                        @else
+                            <img src="{{ asset('admin/assets/img/product/noimage.png') }}" alt="{{ $product->name }}" style="height: 250px; width: 100%;" class="img-fluid w-100">
+                        @endif
+                        @if($product->selling_price < $product->price)
+                                <div class="badge bg-danger text-white position-absolute" style="top: 10px; left: 10px; z-index: 1; padding: 5px 10px; border-radius: 3px;">
+                                    {{ round((($product->price - $product->selling_price) / $product->price) * 100) }}% {{__('product.discount')}}
+                                </div>
+                        @endif
+                         <div class="product-action">
+                                    @if($product->qty >= $product->minqty)
+                                    <a class="btn btn-outline-dark btn-square add-to-cart" data-toggle="tooltip" title="{{__('product.add_to_cart')}}"
+                                    data-product-id="{{ $product->id }}"
+                                    href="javascript:void(0);">
+                                    <i class="fa fa-cart-plus"></i></a>
+                                    @else
+                                    <a class="btn btn-outline-dark btn-square" data-toggle="tooltip" title="{{__('product.unavailable')}}"><i class="fa-solid fa-store-slash"></i></a>
+                                    @endif
+                                    <a class="btn btn-outline-dark btn-square" onclick="addToWishlist({{ $product->id }})" href="javascript:void(0);" data-toggle="tooltip" title="{{__('product.add_wishlist')}}"><i class="far fa-heart"></i></a>
+                                    <a class="btn btn-outline-dark btn-square" href="{{ route('get_product_slug', [$product->category->slug, $product->slug]) }}"data-toggle="tooltip" title="{{__('product.view_deatils')}}"><i class="fa-solid fa-eye"></i></a>
+                                </div>
+                    </div>
+                    <div class="text-center py-4">
+                        <a class="h6 text-decoration-none" href="{{ route('get_product_slug', [$product->category->slug, $product->slug]) }}" style="display: block; height: 40px; overflow: hidden;">{{ $product->name }}</a>
+                        <div class="d-flex align-items-center justify-content-center mt-1">
+                            <span class="text-muted small">
+                                <a href="{{ route('website.category_slug', $product->category->slug) }}" class="text-muted">{{ $product->category->name }}</a>
+                                @if($product->brand)
+                                 | <a href="{{ route('website.shop') }}?brand={{ $product->brand_id }}" class="text-muted">{{ $product->brand->name }}</a>
+                                @endif
+                            </span>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-center mt-2">
+                            <h5>{{ $product->selling_price }} {{__('product.egp')}}</h5>
+                            @if($product->selling_price < $product->price)
+                            <h6 class="text-muted ml-2"><del>{{ $product->price }} {{__('product.egp')}}</del></h6>
+                            @endif
+                        </div>
+                        <div class="d-flex align-items-center justify-content-center mb-1">
+                            <div class="back-stars">
+                                <small class="fa fa-star"></small>
+                                <small class="fa fa-star"></small>
+                                <small class="fa fa-star"></small>
+                                <small class="fa fa-star"></small>
+                                <small class="fa fa-star"></small>
+                                <div class="front-stars" style="width: {{ $product->avgRatingPer }}%">
+                                    <small class="fa fa-star"></small>
+                                    <small class="fa fa-star"></small>
+                                    <small class="fa fa-star"></small>
+                                    <small class="fa fa-star"></small>
+                                    <small class="fa fa-star"></small>
+                                </div>
+                            </div>
+                            <small class="pt-1"> ({{ $product->product_ratings_count }})</small>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-center mt-2">
+                            <a href="{{ route('get_product_slug', [$product->category->slug, $product->slug]) }}" class="btn btn-primary">{{__('main.show_details')}} <i class="fa-solid fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endforeach
+        </div>
     </div>
-    <!-- Products End -->
+    <!-- You May Also Like End -->
+
+    @section('customjs')
+
     <script>
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-    
+
         function addtocart() {
             var product_id = $('#product_id').val();
             var qty = $('#qty_value').val();
-    
+
             console.log('Product ID: ' + product_id + ' | Quantity: ' + qty);
-    
+
             $.ajax({
                 method: 'POST',
                 url: "{{ route('product.addToCart') }}",
@@ -303,19 +508,90 @@
                     quantity: qty
                 },
                 success: function(response) {
-                Swal.fire({
-                    icon: response.icon, // تحديد نوع الأيقونة (success, error, warning, info, question)
-                    title: response.msg, // الرسالة التي يتم عرضها
-                });
+                    Swal.fire({
+                        icon: response.icon,
+                        text: response.msg,
+                        timer: 2000,
+                        timerProgressBar: true,
+                    });
+                    updateCartCount();
                 },
                 error: function(xhr, status, error) {
-                    console.error('Error: ' + error);  // في حالة حدوث خطأ
+                    console.error('Error: ' + error);
                     console.error(xhr.responseText);
                 }
             });
         }
-    </script>
-    
-        
 
+
+        $(document).ready(function () {
+            $("#productRatingForm").submit(function (event) {
+                event.preventDefault();
+
+                $.ajax({
+                    type: "POST",
+                    url: $("#productRatingForm").attr("action"),
+                    data: $(this).serialize(),
+                    dataType: "json",
+                    success: function (response) {
+                        if (response.status) {
+                            Swal.fire({
+                                title: response.title,
+                                text: response.message,
+                                icon: "success",
+                                confirmButtonText: "OK",
+                            }).then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                title: response.title || "Error",
+                                text: response.message || "Something went wrong. Please try again later.",
+                                icon: "warning",
+                                confirmButtonText: "OK",
+                            });
+                        }
+                    },
+                    error: function (xhr) {
+                        if (xhr.status === 401) {
+                            Swal.fire("Unauthorized!", "You need to log in to submit a review.", "warning");
+                        } else if (xhr.status === 422) {
+                            let response = xhr.responseJSON;
+                            Swal.fire({
+                                title: response.title || "Error",
+                                text: response.message || "You have already submitted a review for this product.",
+                                icon: "warning",
+                                confirmButtonText: "OK",
+                            });
+                        } else {
+                            Swal.fire("Error!", "Something went wrong. Please try again later.", "error");
+                        }
+                    },
+                });
+            });
+        });
+
+
+
+
+
+        function handleErrors(errors) {
+            var fields = ['name', 'email', 'comment', 'rating'];
+
+            fields.forEach(function(field) {
+                if (errors[field]) {
+                    $("#" + field).addClass('is-invalid')
+                        .siblings('p')
+                        .addClass('invalid-feedback')
+                        .html(errors[field]);
+                } else {
+                    $("#" + field).removeClass('is-invalid')
+                        .siblings('p')
+                        .removeClass('invalid-feedback')
+                        .html('');
+                }
+            });
+        }
+    </script>
+    @endsection
 @endsection

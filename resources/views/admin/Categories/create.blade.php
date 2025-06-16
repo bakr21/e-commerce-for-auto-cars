@@ -36,7 +36,7 @@
                     <div class="col-lg-12">
                         <div class="form-group">
                             <label class="form-label">Description</label>
-                            <textarea name="description" class="form-control" rows="5" placeholder="Description" required></textarea>
+                            <div class="form-control" name="description" id="summernote" value="{{ old('description') }}" required>Hello Summernote</div>
                             @error('description')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror

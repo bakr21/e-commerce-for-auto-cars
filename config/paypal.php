@@ -5,10 +5,13 @@
  */
 
 return [
-    'mode'    => env('PAYPAL_MODE', 'sandbox'), // Can only be 'sandbox' Or 'live'. If empty or invalid, 'live' will be used.
+    'mode'    => 'sandbox', // Explicitly set to sandbox to avoid any env issues
     'sandbox' => [
-        'client_id'         => env('PAYPAL_SANDBOX_CLIENT_ID', ''),
-        'client_secret'     => env('PAYPAL_SANDBOX_CLIENT_SECRET', ''),
+        'username'          => env('PAYPAL_SANDBOX_USERNAME', ''),
+        'password'          => env('PAYPAL_SANDBOX_PASSWORD', ''),
+        'signature'         => env('PAYPAL_SANDBOX_SIGNATURE', ''),
+        'client_id'         => 'AR9IxLkiIqSvXHypXfQgUrM1jLVdunt_UXXwDoA5-4gb-k9KXn1UYPms1M-HspX_P-NKZK3dOUJUpR-w',
+        'client_secret'     => 'ENv6b15NvI5MasMtmLjcd3z3sJHQ73ixEpDhK5AT-P8X9lJEu_00DpPIZrF0y8wdp6rH_l7RoaTcV-Hd',
         'app_id'            => 'APP-80W284485P519543T',
     ],
     'live' => [
@@ -19,7 +22,6 @@ return [
 
     'payment_action' => env('PAYPAL_PAYMENT_ACTION', 'Sale'), // Can only be 'Sale', 'Authorization' or 'Order'
     'currency'       => env('PAYPAL_CURRENCY', 'USD'),
-    'billing_type'   => 'MechantInitiatedBilling',
     'notify_url'     => env('PAYPAL_NOTIFY_URL', ''), // Change this accordingly for your application.
     'locale'         => env('PAYPAL_LOCALE', 'en_US'), // force gateway language  i.e. it_IT, es_ES, en_US ... (for express checkout only)
     'validate_ssl'   => env('PAYPAL_VALIDATE_SSL', true), // Validate SSL when creating api client.

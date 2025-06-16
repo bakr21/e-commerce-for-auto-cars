@@ -1,5 +1,5 @@
 @extends('admin.layouts.master')
-@section('TitlePage', 'Add Category')
+@section('TitlePage', 'show Category')
 @section('content')
 <div class="content">
     <div class="page-header">
@@ -17,7 +17,7 @@
     <div class="card">
         <div class="card-body">
                 <h5 class="card-title">Personal Information</h5>
-                
+
                 <div class="row">
                     <div class="col-lg-6 col-sm-6 col-12">
                         <div class="form-group">
@@ -59,7 +59,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="col-lg-12">
                         <label >Category Image</label>
                         <div class="input-group justify-content-center">
@@ -101,7 +101,7 @@
                         <a href="{{route('categories.index')}}" class="btn btn-primary">Back to categories list</a>
                     </div>
                 </div>
-            
+
         </div>
     </div>
 </div>

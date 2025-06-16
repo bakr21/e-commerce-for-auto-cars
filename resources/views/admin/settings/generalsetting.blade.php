@@ -8,7 +8,7 @@
             <h6>Manage General Setting</h6>
         </div>
     </div>
-    
+
     <div class="card">
         <div class="card-body">
             <form action="{{ route('settings.update') }}" method="POST" enctype="multipart/form-data">
@@ -19,6 +19,7 @@
                         <div class="form-group">
                             <label>Site Name <span class="manitory">*</span></label>
                             <input type="text" name="site_name" value="{{ old('site_name', $settings->site_name ?? '') }}" placeholder="Enter Site Name" class="form-control">
+                            <input type="text" name="site_name_ar" value="{{ old('site_name_ar', $settings->getTranslation('site_name', 'ar') ?? '') }}" placeholder="ادخل اسم الموقع بالعربي" class="form-control mt-2">
                             @error('site_name')
                             <span class="text-danger">{{ $message }}</span>
                             @enderror
@@ -30,6 +31,7 @@
                             <input type="text" name="email" value="{{ old('email', $settings->email ?? '') }}" placeholder="Enter email" class="form-control">
                         </div>
                     </div>
+
                     <div class="col-lg-7">
                         <div class="form-group">
                             <label>Site Image</label>
@@ -45,6 +47,7 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="col-lg-5">
                         <div class="form-group">
                             <label>Preview Image</label>
@@ -54,10 +57,12 @@
                             <div class="preview-images rounded d-inline" ></div>
                         </div>
                     </div>
+
                     <div class="col-lg-12 col-sm-6 col-12">
                         <div class="form-group">
                             <label>Company Description<span class="manitory">*</span></label>
-                            <input type="text" name="company_description" value="{{ old('company_description', $settings->company_description ?? '') }}" placeholder="Enter Company Description">
+                            <input type="text" name="company_description" value="{{ old('company_description', $settings->company_description ?? '') }}" placeholder="Enter Company Description" class="form-control">
+                            <input type="text" name="company_description_ar" value="{{ old('company_description_ar', $settings->getTranslation('company_description', 'ar') ?? '') }}" placeholder="ادخل وصف الشركة بالعربي" class="form-control mt-2">
                         </div>
                     </div>
                     <div class="col-lg-6 col-sm-6 col-12">
@@ -72,56 +77,63 @@
                             <input type="text" name="hotline" value="{{ old('hotline', $settings->hotline ?? '') }}" placeholder="Enter hotline">
                         </div>
                     </div>
+
                     <div class="col-lg-12 col-sm-6 col-12">
                         <div class="form-group">
                             <label>Address <span class="manitory">*</span></label>
-                            <input type="text" name="address" value="{{ old('address', $settings->address ?? '') }}" placeholder="Enter Address">
+                            <input type="text" name="address" value="{{ old('address', $settings->address ?? '') }}" placeholder="Enter Address" class="form-control">
+                            <input type="text" name="address_ar" value="{{ old('address_ar', $settings->getTranslation('address', 'ar') ?? '') }}" placeholder="ادخل العنوان بالعربي" class="form-control mt-2">
                         </div>
                     </div>
+
                     <div class="col-lg-6 col-sm-12">
                         <div class="form-group">
-                            <label>Map Link<span class="manitory">*</span> </label>
+                            <label>Map Link<span class="manitory">*</span></label>
                             <input type="text" name="map_link" value="{{ old('map_link', $settings->map_link ?? '') }}" placeholder="Enter Map Link">
                         </div>
                     </div>
                     <div class="col-lg-6 col-sm-12">
                         <div class="form-group">
-                            <label>Facebook  Link<span class="manitory">*</span> </label>
-                            <input type="text" name="facebook_link" value="{{ old('facebook_link', $settings->facebook_link ?? '') }}"placeholder="Enter Facebook Link">
+                            <label>Facebook Link<span class="manitory">*</span></label>
+                            <input type="text" name="facebook_link" value="{{ old('facebook_link', $settings->facebook_link ?? '') }}" placeholder="Enter Facebook Link">
                         </div>
                     </div>
+
                     <div class="col-lg-6 col-sm-12">
                         <div class="form-group">
-                            <label>Whatsapp Number<span class="manitory">*</span> </label>
+                            <label>Whatsapp Number<span class="manitory">*</span></label>
                             <input type="text" name="whatsapp_number" value="{{ old('whatsapp_number', $settings->whatsapp_number ?? '') }}" placeholder="Enter Whatsapp Link">
                         </div>
                     </div>
                     <div class="col-lg-6 col-sm-12">
                         <div class="form-group">
-                            <label>Twitter Link<span class="manitory">*</span> </label>
+                            <label>Twitter Link<span class="manitory">*</span></label>
                             <input type="text" name="twitter_link" value="{{ old('twitter_link', $settings->twitter_link ?? '') }}" placeholder="Enter Twitter Link">
                         </div>
                     </div>
+
                     <div class="col-lg-6 col-sm-12">
                         <div class="form-group">
-                            <label>Linkedin Link<span class="manitory">*</span> </label>
+                            <label>Linkedin Link<span class="manitory">*</span></label>
                             <input type="text" name="linkedin_link" value="{{ old('linkedin_link', $settings->linkedin_link ?? '') }}" placeholder="Enter Linkedin Link">
                         </div>
                     </div>
                     <div class="col-lg-6 col-sm-12">
                         <div class="form-group">
-                            <label>Working Hours<span class="manitory">*</span> </label>
+                            <label>Working Hours<span class="manitory">*</span></label>
                             <input type="text" name="working_hours" value="{{ old('working_hours', $settings->working_hours ?? '') }}" placeholder="Enter Working Hours ( from 10 pm to 10 am )">
                         </div>
                     </div>
+
                     <div class="row">
                         <div class="col-lg-12">
                             <button type="submit" class="btn btn-submit me-2">Save & update</button>
                             <a href="{{ route('admin.dashboard') }}" class="btn btn-cancel">Cancel</a>
                         </div>
                     </div>
-                </form>
-            </div>
+                </div>
+            </form>
+
         </div>
     </div>
 

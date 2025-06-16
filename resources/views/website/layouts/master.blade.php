@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}">
 
 <head>
     <meta charset="utf-8">
@@ -8,116 +8,151 @@
     <meta content="Free HTML Templates" name="keywords">
     <meta content="Free HTML Templates" name="description">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    
-    
+    <meta http-equiv="Content-Language" content="{{ app()->getLocale() }}">
+    <meta name="language" content="{{ app()->getLocale() }}">
 
     <!-- Favicon -->
     <link href="{{asset('website/assets/img/logoIcon.svg')}}" rel="icon">
 
     <!-- Google Web Fonts -->
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">  
+    @if (app()->getLocale() == 'ar')
+        <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&family=Tajawal:wght@200;300;400;500;700;800;900&display=swap" rel="stylesheet">
+        {{-- <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet"> --}}
+    @else
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    @endif
 
     <!-- Font Awesome -->
-
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+
+    <!-- jQuery -->
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
 
-    <!-- Libraries Stylesheet -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <!-- Bootstrap CSS -->
+    @if (app()->getLocale() == 'en')
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+    @else
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.rtl.min.css">
+    @endif
+
+    <!-- Libraries -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icons/6.6.6/css/flag-icons.min.css">
     <link href="{{asset('website/assets/lib/animate/animate.min.css')}}" rel="stylesheet">
     <link href="{{asset('website/assets/lib/owlcarousel/assets/owl.carousel.min.css')}}" rel="stylesheet">
     <link href="{{asset('website/assets/lib/owlcarousel/assets/owl.theme.default.min.css')}}" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
     <link href="{{asset('website/assets/css/ion.rangeSlider.min.css')}}" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
-    <!-- Customized Bootstrap Stylesheet -->
-    <link href="{{asset('website/assets/css/style.css')}}" rel="stylesheet">
+    <!-- Main CSS -->
+    @if (app()->getLocale() == 'en')
+        <link href="{{asset('website/assets/css/style.css')}}" rel="stylesheet">
+    @else
+        <link href="{{asset('website/assets/css/style-rtl.css')}}" rel="stylesheet">
+    @endif
+
+    <!-- Animations CSS -->
+    <link href="{{asset('website/assets/css/animations.css')}}" rel="stylesheet">
+
 </head>
-
 <body>
     <!-- Topbar Start -->
     @include('website.layouts.inc.topbar')
     <!-- Topbar End -->
 
-
     <!-- Navbar Start -->
     @include('website.layouts.inc.navbar')
     <!-- Navbar End -->
 
-
     @yield('content')
-
 
     <!-- Footer Start -->
     @include('website.layouts.inc.footer')
     <!-- Footer End -->
 
-
     <!-- Back to Top -->
     <a href="#" class="btn btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
 
-
     <!-- JavaScript Libraries -->
-    
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
     <script src="{{asset('website/assets/lib/easing/easing.min.js')}}"></script>
     <script src="{{asset('website/assets/lib/owlcarousel/owl.carousel.min.js')}}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
-
-
-    <!-- Contact Javascript File -->
-    {{-- <script src="{{asset('website/assets/mail/jqBootstrapValidation.min.js')}}"></script>
-    <script src="{{asset('website/assets/mail/contact.js')}}"></script> --}}
-    <script src="{{asset('website/assets/js/ion.rangeSlider.min.js')}}"></script>
-
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- Template Javascript -->
     <script src="{{asset('website/assets/js/main.js')}}"></script>
+    <script src="{{asset('website/assets/js/ion.rangeSlider.min.js')}}"></script>
     <script src="https://kit.fontawesome.com/3f5c27b3b0.js" crossorigin="anonymous"></script>
+    <script>
+        // Initialize AOS with custom settings
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true,
+            mirror: false
+        });
+
+        // Initialize tooltips
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+
+        // Activate scroll animations
+        $(window).scroll(function() {
+            var windowHeight = $(window).height();
+            var scrollTop = $(window).scrollTop();
+
+            $('.scroll-animation').each(function() {
+                var elementPos = $(this).offset().top;
+
+                if (scrollTop + windowHeight > elementPos) {
+                    $(this).addClass('active');
+                }
+            });
+        });
+    </script>
 
     @yield('customjs')
+
     <script>
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-    
-        $('.add-to-cart').on('click', function() {
-        var product_id = $(this).data('product-id');
-        var qty = 1;  // الكمية الثابتة
 
-        console.log('Product ID: ' + product_id + ' | Quantity: ' + qty);  // تأكد من أن الكمية هي 1
-        
-        // إرسال الـ AJAX
-        $.ajax({
-            method: 'POST',
-            url: "{{ route('product.addToCart') }}",  // تأكد من أن هذه هي الـ route الصحيحة
-            data: {
-                _token: "{{ csrf_token() }}",
-                product_id: product_id,
-                quantity: qty
-            },
-            success: function(response) {
-                Swal.fire({
-                    icon: response.icon, // تحديد نوع الأيقونة (success, error, warning, info, question)
-                    title: response.msg, // الرسالة التي يتم عرضها
-                });
-            },
-            error: function(xhr, status, error) {
-                console.error('Error: ' + error);  // في حالة حدوث خطأ
-                console.error(xhr.responseText);
-            }
+
+        $(document).on('click', '.add-to-cart', function() {
+            var product_id = $(this).data('product-id');
+            var qty = 1;
+
+            $.ajax({
+                method: 'POST',
+                url: "{{ route('product.addToCart') }}",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    product_id: product_id,
+                    quantity: qty
+                },
+                success: function(response) {
+                    Swal.fire({
+                        icon: response.icon,
+                        text: response.msg,
+                        timer: 1500,
+                        timerProgressBar: true,
+                    });
+                    updateCartCount();
+                },
+                error: function(xhr) {
+                    console.error(xhr.responseText);
+                }
+            });
         });
-    });
 
         function addToWishlist(id) {
             $.ajax({
@@ -131,11 +166,12 @@
                 success: function(response) {
                     if (response.status) {
                         updateWishlistCount();
-                        // إذا تمت العملية بنجاح
                         Swal.fire({
                             icon: 'success',
                             title: 'Added to Wishlist',
                             text: response.message,
+                            timer: 1500,
+                            timerProgressBar: true,
                         });
                     } else if (response.redirect) {
                         window.location.href = response.redirect;
@@ -144,6 +180,8 @@
                             icon: 'info',
                             title: 'Notice',
                             text: response.message,
+                            timer: 1500,
+                            timerProgressBar: true,
                         });
                     }
                 },
@@ -159,36 +197,39 @@
                     }
                 }
             });
-        }   
+        }
 
         function updateCartCount() {
             $.ajax({
-                url: "{{ route('cart.count') }}", // رابط الـ route للحصول على عدد المنتجات
+                url: "{{ route('cart.count') }}",
                 type: 'GET',
                 success: function(response) {
-                    // تحديث عدد المنتجات المعروض في الأيقونة
                     $('#cart-count').text(response.cart_count);
                 },
-                error: function(xhr, status, error) {
-                    console.error('Error updating cart count: ' + error);
+                error: function(xhr) {
+                    console.error('Error updating cart count: ' + xhr.responseText);
                 }
             });
         }
 
         function updateWishlistCount() {
             $.ajax({
-                url: '{{ route('wishlist.count') }}', // مسار يعيد عدد المنتجات في المفضلة
+                url: '{{ route('wishlist.count') }}',
                 type: 'GET',
                 success: function(response) {
-                    // تحديث العدد في الـ HTML
                     $('#wishlist-count').text(response.count);
                 }
             });
         }
 
-
+        // ✅ تحديث عدد العناصر في العربة والـ Wishlist عند تحميل الصفحة
+        $(document).ready(function() {
+            updateCartCount();
+            updateWishlistCount();
+        });
     </script>
-    
+
+
 </body>
 
 </html>

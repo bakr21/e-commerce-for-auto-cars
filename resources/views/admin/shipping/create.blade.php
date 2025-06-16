@@ -31,7 +31,7 @@
                     </div>
                     <div class="col-lg-4 col-sm-6 col-12">
                         <div class="form-group">
-                            <input type="text" name="amount" id="amount" class="form-control" placeholder="Amount"
+                            <input type="text" name="amount" id="amount" class="form-control" placeholder="Amount Per Unit"
                                 value="{{ old('amount') }}">
                                 <p></p>
                             </div>
@@ -86,7 +86,7 @@
                             <th>#</th>
                             {{-- <th>Image</th> --}}
                             <th>Country</th>
-                            <th>Amount</th>
+                            <th>Amount Per Unit</th>
                             <th>Action</th>
                         </tr>
                     </thead>

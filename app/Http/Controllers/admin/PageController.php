@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\admin;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StorePageRequest;
+use App\Http\Requests\Admin\UpdatePageRequest;
 use App\Models\Page;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
-
 
 class PageController extends Controller
 {
@@ -31,22 +30,8 @@ class PageController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StorePageRequest $request)
     {
-        
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'slug' => 'required|unique:pages,slug',
-            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048', // شرط رفع الصورة
-        ]);
-    
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => false,
-                'errors' => $validator->errors(),
-            ]);
-        }
-        
         $page = new Page;
         $page->name = $request->name;
         $page->slug = $request->slug;
@@ -57,16 +42,13 @@ class PageController extends Controller
             $page->image = $path;
         }
         $page->save();
-    
-        
+
         session()->flash('success', 'Page added successfully');
-    
+
         return response()->json([
             'status' => true,
         ]);
     }
-    
-
 
     /**
      * Display the specified resource.
@@ -76,7 +58,6 @@ class PageController extends Controller
         $page = Page::where('slug', $slug)->firstOrFail();
         return view('website.page', compact('page'));
     }
-
 
     /**
      * Show the form for editing the specified resource.
@@ -96,27 +77,13 @@ class PageController extends Controller
     /**
      * Update the specified resource in storage.
      */
-
-    public function update(Request $request, string $id)
+    public function update(UpdatePageRequest $request, string $id)
     {
         $page = Page::find($id);
 
         if (empty($page)){
             session()->flash('error', 'Record not found');
             return redirect()->route('pages.index');
-        }
-
-        $validator = Validator::make($request->all(),[
-            'name' => 'required|string|max:255',
-            'slug' => 'required|string|unique:pages,slug,' . $id . ',id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        ]);
-
-        if($validator->fails()){
-            return response()->json([
-                'status' => false,
-                'errors' => $validator->errors(),
-            ]);
         }
 
         // Update page details
@@ -140,7 +107,6 @@ class PageController extends Controller
         return response()->json(['status' => true]);
     }
 
-
     /**
      * Remove the specified resource from storage.
      */
@@ -159,7 +125,7 @@ class PageController extends Controller
         $page->delete();
 
         session()->flash('success', 'page deleted successfully');
-        
+
         return response()->json([
             'status' => true,
         ]);

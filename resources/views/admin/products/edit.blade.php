@@ -18,13 +18,27 @@
         <div class="card-body">
             <form action="{{ route('products.update', $product->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                @method('PUT') <!-- إضافة توجيه لطريقة التحديث -->
+                @method('PUT')
+
+                <!-- Basic Information -->
                 <div class="row">
-                    <div class="col-lg-3 col-sm-6 col-12">
+                    <div class="col-12">
+                        <h4 class="mb-3 border-bottom pb-2">Basic Information</h4>
+                    </div>
+                    <div class="col-lg-6 col-sm-6 col-12">
                         <div class="form-group">
-                            <label>Product Name <span class="text-danger">&#9913;</span></label>
-                            <input type="text" name="name" class="form-control" placeholder="Name" value="{{ old('name', $product->name) }}" >
-                            @error('name')
+                            <label>Product Name (Arabic) <span class="text-danger">&#9913;</span></label>
+                            <input type="text" name="name[ar]" class="form-control" placeholder="الاسم بالعربية" value="{{ old('name.ar', $product->getTranslation('name', 'ar', false)) }}" >
+                            @error('name.ar')
+                                    <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>Product Name (English) <span class="text-danger">&#9913;</span></label>
+                            <input type="text" name="name[en]" class="form-control" placeholder="Name in English" value="{{ old('name.en', $product->getTranslation('name', 'en', false)) }}" >
+                            @error('name.en')
                                     <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
@@ -59,28 +73,6 @@
                     </div>
                     <div class="col-lg-3 col-sm-6 col-12">
                         <div class="form-group">
-                            <label>Unit</label>
-                            <select name="unit" class="select">
-                                <option>Choose Unit</option>
-                                <option value="piece" {{ old('unit', $product->unit) == 'piece' ? 'selected' : '' }}>Piece</option>
-                                <option value="kg" {{ old('unit', $product->unit) == 'kg' ? 'selected' : '' }}>Kg</option>
-                            </select>
-                            @error('unit')
-                                    <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-sm-6 col-12">
-                        <div class="form-group">
-                            <label>Code</label>
-                            <input type="text" name="code" class="form-control" value="{{ old('code', $product->code) }}">
-                            @error('code')
-                                    <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-sm-6 col-12">
-                        <div class="form-group">
                             <label>Minimum Qty</label>
                             <input type="number" name="min_qty" class="form-control" value="{{ old('min_qty', $product->min_qty) }}">
                             @error('min_qty')
@@ -97,20 +89,47 @@
                             @enderror
                         </div>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-3 col-sm-6 col-12">
                         <div class="form-group">
-                            <label>Short Description <span class="text-danger">&#9913;</span></label>
-                            <textarea class="form-control" name="short_description" rows="3" cols="3">{{ old('short_description', $product->short_description) }}</textarea>
-                            @error('short_description')
+                            <label>Minimum Quantity <span class="text-danger">&#9913;</span></label>
+                            <input type="number" name="min_qty" class="form-control" value="{{ old('min_qty', $product->minqty) }}">
+                            @error('min_qty')
                                     <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
                     </div>
                     <div class="col-lg-6">
                         <div class="form-group">
-                            <label>Description <span class="text-danger">&#9913;</span></label>
-                            <textarea class="form-control" name="description">{{ old('description', $product->description) }}</textarea>
-                            @error('description')
+                            <label>Short Description (Arabic) <span class="text-danger">&#9913;</span></label>
+                            <textarea class="form-control" name="short_description[ar]" rows="3" cols="3" placeholder="وصف قصير بالعربية">{{ old('short_description.ar', $product->getTranslation('short_description', 'ar', false)) }}</textarea>
+                            @error('short_description.ar')
+                                    <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label>Short Description (English) <span class="text-danger">&#9913;</span></label>
+                            <textarea class="form-control" name="short_description[en]" rows="3" cols="3" placeholder="Short description in English">{{ old('short_description.en', $product->getTranslation('short_description', 'en', false)) }}</textarea>
+                            @error('short_description.en')
+                                    <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label>Description (Arabic) <span class="text-danger">&#9913;</span></label>
+                            <textarea class="form-control" name="description[ar]" id="summernote_ar">{{ old('description.ar', $product->getTranslation('description', 'ar', false)) }}</textarea>
+                            @error('description.ar')
+                                    <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label>Description (English) <span class="text-danger">&#9913;</span></label>
+                            <textarea class="form-control" name="description[en]" id="summernote_en">{{ old('description.en', $product->getTranslation('description', 'en', false)) }}</textarea>
+                            @error('description.en')
                                     <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
@@ -123,6 +142,13 @@
                             <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
+                    </div>
+                </div>
+
+                <!-- Pricing Information -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <h4 class="mb-3 border-bottom pb-2">Pricing Information</h4>
                     </div>
                     <div class="col-lg-3 col-sm-6 col-12">
                         <div class="form-group">
@@ -151,61 +177,80 @@
                             @enderror
                         </div>
                     </div>
-                    <div class="col-lg-6">
+                </div>
+
+                <!-- Product Settings -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <h4 class="mb-3 border-bottom pb-2">Product Settings</h4>
+                    </div>
+                    <div class="col-lg-3 col-sm-6 col-12">
                         <div class="form-group">
-                            <label> Status</label>
-                            <div class="checkbox">
-                                <label>
-                                    <input type="checkbox" name="status" {{ old('status', $product->status) ? 'checked' : '' }}> Show in Website
-                                </label>
-                            </div>
+                            <label>Status <span class="text-danger">&#9913;</span></label>
+                            <select name="status" class="select">
+                                <option value="1" {{ old('status', $product->status) == 1 ? 'selected' : '' }}>Active</option>
+                                <option value="0" {{ old('status', $product->status) == 0 ? 'selected' : '' }}>Inactive</option>
+                            </select>
                             @error('status')
-                            <span class="text-danger">{{ $message }}</span>
+                                <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-3 col-sm-6 col-12">
                         <div class="form-group">
-                            <label> Trend</label>
-                            <div class="checkbox">
-                                <label>
-                                    <input type="checkbox" name="trend" {{ old('trend', $product->trend) ? 'checked' : '' }}> Trend in Website
-                                </label>
-                            </div>
+                            <label>Trend <span class="text-danger">&#9913;</span></label>
+                            <select name="trend" class="select">
+                                <option value="1" {{ old('trend', $product->trend) == 1 ? 'selected' : '' }}>Yes</option>
+                                <option value="0" {{ old('trend', $product->trend) == 0 ? 'selected' : '' }}>No</option>
+                            </select>
                             @error('trend')
-                            <span class="text-danger">{{ $message }}</span>
+                                <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
                     </div>
-        
+
+                </div>
+
+                <!-- Product Images -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <h4 class="mb-3 border-bottom pb-2">Product Images</h4>
+                    </div>
                     <div class="col-lg-12">
                         <div class="form-group">
-                            <label> Product Image <span class="text-danger">must at least one photo &#9913;</span></label>
+                            <label>Product Images <span class="text-danger">must have at least one photo &#9913;</span></label>
                             <div class="image-upload">
                                 <input type="file" name="images[]" id="images" class="form-control" multiple>
                                 <div class="image-uploads">
                                     <img src="{{ asset('admin/assets/img/icons/upload.svg') }}" alt="img">
-                                    <h4>Drag and drop a file to upload</h4>
+                                    <h4>Drag and drop files to upload</h4>
                                 </div>
                             </div>
                             @error('images')
                             <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
-                        <div class="col-lg-12">
-                            <div class="form-group">
-                                <label>Preview Image</label>
-                                <div class="preview-images rounded d-inline" style="width: 200px;">
-                                    @foreach($product->images as $image)
-                                        <img src="{{ Storage::url($image->image_path) }}" alt="img" style="width: 100px; height: 100px; margin: 5px;">
-                                    @endforeach
-                                </div> <!-- هنا سيتم عرض الصور -->
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label>Current Images</label>
+                            <div class="preview-images rounded d-flex flex-wrap">
+                                @foreach($product->images as $image)
+                                    <div class="position-relative m-2">
+                                        <img src="{{ Storage::url($image->image_path) }}" alt="img" class="img-thumbnail" style="width: 120px; height: 120px; object-fit: cover;">
+                                    </div>
+                                @endforeach
                             </div>
                         </div>
                     </div>
-                    <h5 class="card-title">SEO Product</h5>
-                        <div class="row">
-                            <div class="col-xl-6">
+                </div>
+
+                <!-- SEO Information -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <h4 class="mb-3 border-bottom pb-2">SEO Information</h4>
+                    </div>
+                    <div class="col-xl-6">
                                 <div class="form-group row">
                                     <label class="col-lg-3 col-form-label">Slug <span class="text-danger">&#9913;</span></label>
                                     <div class="col-lg-9">
@@ -216,19 +261,37 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-lg-3 col-form-label">Meta Title <span class="text-danger">&#9913;</span></label>
+                                    <label class="col-lg-3 col-form-label">Meta Title (Arabic) <span class="text-danger">&#9913;</span></label>
                                     <div class="col-lg-9">
-                                        <input type="text" name="meta_title" class="form-control" placeholder="Meta Title" value="{{ old('meta_title', $product->meta_title) }}" >
-                                        @error('meta_title')
+                                        <input type="text" name="meta_title[ar]" class="form-control" placeholder="عنوان الميتا بالعربية" value="{{ old('meta_title.ar', $product->getTranslation('meta_title', 'ar', false)) }}" >
+                                        @error('meta_title.ar')
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-lg-3 col-form-label">Meta <br> Description <span class="text-danger">&#9913;</span></label>
+                                    <label class="col-lg-3 col-form-label">Meta Title (English) <span class="text-danger">&#9913;</span></label>
                                     <div class="col-lg-9">
-                                        <textarea name="meta_description" class="form-control" rows="2" placeholder="Meta Description">{{ old('meta_description', $product->meta_description) }}</textarea>
-                                        @error('meta_description')
+                                        <input type="text" name="meta_title[en]" class="form-control" placeholder="Meta Title in English" value="{{ old('meta_title.en', $product->getTranslation('meta_title', 'en', false)) }}" >
+                                        @error('meta_title.en')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-lg-3 col-form-label">Meta Description (Arabic) <span class="text-danger">&#9913;</span></label>
+                                    <div class="col-lg-9">
+                                        <textarea name="meta_description[ar]" class="form-control" rows="2" placeholder="وصف الميتا بالعربية">{{ old('meta_description.ar', $product->getTranslation('meta_description', 'ar', false)) }}</textarea>
+                                        @error('meta_description.ar')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-lg-3 col-form-label">Meta Description (English) <span class="text-danger">&#9913;</span></label>
+                                    <div class="col-lg-9">
+                                        <textarea name="meta_description[en]" class="form-control" rows="2" placeholder="Meta Description in English">{{ old('meta_description.en', $product->getTranslation('meta_description', 'en', false)) }}</textarea>
+                                        @error('meta_description.en')
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
                                     </div>
@@ -236,31 +299,93 @@
                             </div>
                             <div class="col-xl-6">
                                 <div class="form-group row">
-                                    <label class="col-lg-3 col-form-label">Meta <br> Keywords <span class="text-danger">&#9913;</span></label>
+                                    <label class="col-lg-3 col-form-label">Meta Keywords (Arabic) <span class="text-danger">&#9913;</span></label>
                                     <div class="col-lg-9">
-                                        <textarea name="meta_keywords" class="form-control" rows="5" placeholder="Meta Keywords">{{ old('meta_keywords', $product->meta_keywords) }}</textarea>
-                                        @error('meta_keywords')
+                                        <textarea name="meta_keywords[ar]" class="form-control" rows="3" placeholder="الكلمات المفتاحية بالعربية">{{ old('meta_keywords.ar', $product->getTranslation('meta_keywords', 'ar', false)) }}</textarea>
+                                        @error('meta_keywords.ar')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-lg-3 col-form-label">Meta Keywords (English) <span class="text-danger">&#9913;</span></label>
+                                    <div class="col-lg-9">
+                                        <textarea name="meta_keywords[en]" class="form-control" rows="3" placeholder="Meta Keywords in English">{{ old('meta_keywords.en', $product->getTranslation('meta_keywords', 'en', false)) }}</textarea>
+                                        @error('meta_keywords.en')
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    <div class="col-lg-12">
-                        <button type="submit" class="btn btn-submit me-2">Submit</button>
-                        <a href="{{ route('products.index') }}" class="btn btn-cancel">Cancel</a>
+                </div>
+
+                <!-- Validation Errors -->
+                @if ($errors->any())
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                @endif
+
+                <!-- Submit Buttons -->
+                <div class="row mt-4">
+                    <div class="col-lg-12 text-center">
+                        <button type="submit" class="btn btn-primary btn-lg me-2">
+                            <i class="fa fa-save me-2"></i> Save Changes
+                        </button>
+                        <a href="{{ route('products.index') }}" class="btn btn-danger btn-lg">
+                            <i class="fa fa-times me-2"></i> Cancel
+                        </a>
                     </div>
                 </div>
             </form>
         </div>
-        
-        
+
+
     </div>
 </div>
 
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Initialize Summernote editors
+        $('#summernote_ar').summernote({
+            height: 200,
+            toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'underline', 'clear']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['table', ['table']],
+                ['insert', ['link', 'picture']],
+                ['view', ['fullscreen', 'codeview', 'help']]
+            ],
+            placeholder: 'وصف المنتج بالعربية'
+        });
+
+        $('#summernote_en').summernote({
+            height: 200,
+            toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'underline', 'clear']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['table', ['table']],
+                ['insert', ['link', 'picture']],
+                ['view', ['fullscreen', 'codeview', 'help']]
+            ],
+            placeholder: 'Product description in English'
+        });
+
+        // Calculate profit
         var priceInput = document.getElementById('price');
         var sellingPriceInput = document.getElementById('selling_price');
         var profitInput = document.getElementById('profit');
@@ -271,6 +396,9 @@
             var profit = sellingPrice - price;
             profitInput.value = profit.toFixed(2);
         }
+
+        // Calculate profit on page load
+        calculateProfit();
 
         priceInput.addEventListener('input', calculateProfit);
         sellingPriceInput.addEventListener('input', calculateProfit);

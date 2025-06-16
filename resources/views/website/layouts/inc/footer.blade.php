@@ -12,36 +12,26 @@
                 <div class="col-md-4 mb-5">
                     <h5 class="text-secondary text-uppercase mb-4">Quick Shop</h5>
                     <div class="d-flex flex-column justify-content-start">
-                        <a class="text-secondary mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Home</a>
-                        <a class="text-secondary mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Our Shop</a>
-                        <a class="text-secondary mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Shop Detail</a>
-                        <a class="text-secondary mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Shopping Cart</a>
-                        <a class="text-secondary mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Checkout</a>
-                        <a class="text-secondary" href="#"><i class="fa fa-angle-right mr-2"></i>Contact Us</a>
+                        <a class="text-secondary mb-2" href="{{ route('home') }}"><i class="fa fa-angle-right mr-2"></i>Home</a>
+                        <a class="text-secondary mb-2" href="{{ route('website.shop') }}"><i class="fa fa-angle-right mr-2"></i>Our Shop</a>
+                        <a class="text-secondary mb-2" href="{{ route('website.categories') }}"><i class="fa fa-angle-right mr-2"></i>Categories</a>
+                        <a class="text-secondary mb-2" href="{{ route('website.cart') }}"><i class="fa fa-angle-right mr-2"></i>Shopping Cart</a>
+                        <a class="text-secondary mb-2" href="{{ route('checkout.index') }}"><i class="fa fa-angle-right mr-2"></i>Checkout</a>
+                        <a class="text-secondary" href="{{ route('website.catalogs') }}"><i class="fa fa-angle-right mr-2"></i>Catalogs</a>
                     </div>
                 </div>
                 <div class="col-md-3 mb-5">
-                    <h5 class="text-secondary text-uppercase mb-4">My Account</h5>
+                    <h5 class="text-secondary text-uppercase mb-4">Information</h5>
                     <div class="d-flex flex-column justify-content-start">
-                        <a class="text-secondary mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Home</a>
-                        <a class="text-secondary mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Our Shop</a>
-                        <a class="text-secondary mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Shop Detail</a>
-                        <a class="text-secondary mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Shopping Cart</a>
-                        <a class="text-secondary mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Checkout</a>
-                        <a class="text-secondary" href="#"><i class="fa fa-angle-right mr-2"></i>Contact Us</a>
+                        <a class="text-secondary mb-2" href="{{ route('website.about') }}"><i class="fa fa-angle-right mr-2"></i>About Us</a>
+                        <a class="text-secondary mb-2" href="{{ url('page/contact-us') }}"><i class="fa fa-angle-right mr-2"></i>Contact Us</a>
+                        <a class="text-secondary mb-2" href="{{ url('page/privacy-policy') }}"><i class="fa fa-angle-right mr-2"></i>Privacy Policy</a>
+                        <a class="text-secondary mb-2" href="{{ url('page/terms-conditions') }}"><i class="fa fa-angle-right mr-2"></i>Terms & Conditions</a>
+                        <a class="text-secondary mb-2" href="{{ url('page/faq') }}"><i class="fa fa-angle-right mr-2"></i>FAQ</a>
+                        <a class="text-secondary" href="{{ route('login') }}"><i class="fa fa-angle-right mr-2"></i>My Account</a>
                     </div>
                 </div>
                 <div class="col-md-5 mb-5">
-                    <h5 class="text-secondary text-uppercase mb-4">Newsletter</h5>
-                    <p>Be the first to know about our new products and special services and receive the latest exclusive offers and discounts. Subscribe to our mailing list now!</p>
-                    <form action="">
-                        <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Your Email Address">
-                            <div class="input-group-append">
-                                <button class="btn btn-primary">Sign Up</button>
-                            </div>
-                        </div>
-                    </form>
                     <h6 class="text-secondary text-uppercase mt-4 mb-3">Follow Us</h6>
                     <div class="d-flex">
                         @if (!empty($site_settings->twitter_link))
@@ -59,7 +49,11 @@
                                 <i class="fab fa-linkedin-in"></i>
                             </a>
                         @endif
-                        <a class="btn btn-primary btn-square" href="#"><i class="fab fa-instagram"></i></a>
+                        @if (!empty($site_settings->instagram_link))
+                            <a class="btn btn-primary btn-square" href="{{ $site_settings->instagram_link }}" target="_blank">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -68,9 +62,9 @@
     <div class="row border-top mx-xl-5 py-4" style="border-color: rgba(256, 256, 256, .1) !important;">
         <div class="col-md-6 px-xl-0">
             <p class="mb-md-0 text-center text-md-left text-secondary">
-                &copy; <a class="text-primary" href="#">zakybakr.com</a>. All Rights Reserved. Web Developer
+                &copy; <a class="text-primary" href="{{ route('home') }}">{{ $site_settings->site_name ?? 'zakybakr.com' }}</a>. All Rights Reserved. Web Developer
                 by
-                <a class="text-primary" href="#">Ahmed Bakr</a>
+                <a class="text-primary" href="{{ route('home') }}">Ahmed Bakr</a>
             </p>
         </div>
         <div class="col-md-6 px-xl-0 text-center text-md-right">
@@ -78,3 +72,4 @@
         </div>
     </div>
 </div>
+
