@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\admin;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Country;
@@ -14,7 +14,7 @@ class ShippingController extends Controller
         $countries = Country::get();
         $shippingCharges = ShippingCharges::select('Shipping_charges.*','countries.name')
                             ->leftjoin('countries','countries.id','Shipping_charges.country_id')->get();
-                
+
         return view('admin.shipping.create' ,compact('countries' , 'shippingCharges'));
     }
 
@@ -23,7 +23,7 @@ class ShippingController extends Controller
             'country' => 'required',
             'amount' => 'required|numeric',
         ]);
-    
+
         if ($validator->passes()) {
             // check if shipping already added for this country
             $count = ShippingCharges::where('country_id',$request->country)->count();
@@ -38,12 +38,12 @@ class ShippingController extends Controller
             $shipping->country_id = $request->country;
             $shipping->amount = $request->amount;
             $shipping->save();
-    
+
             session()->flash('success', 'Shipping added successfully');
             return response()->json([
                 'status' => true,
             ]);
-    
+
         } else {
             return response()->json([
                 'status' => false,
@@ -51,7 +51,7 @@ class ShippingController extends Controller
             ]);
         }
     }
-    
+
     public function edit($id){
         $shippingCharge = ShippingCharges::find($id);
         $countries = Country::get();
@@ -65,7 +65,7 @@ class ShippingController extends Controller
             'country' => 'required',
             'amount' => 'required|numeric',
         ]);
-    
+
         if ($validator->passes()) {
 
             if ($shipping == null ){
@@ -79,12 +79,12 @@ class ShippingController extends Controller
             $shipping->country_id = $request->country;
             $shipping->amount = $request->amount;
             $shipping->save();
-    
+
             session()->flash('success', 'Shipping updated successfully');
             return response()->json([
                 'status' => true,
             ]);
-    
+
         } else {
             return response()->json([
                 'status' => false,
@@ -103,7 +103,7 @@ class ShippingController extends Controller
                 'status' => true,
             ]);
         }
-        
+
         session()->flash('success', 'Shipping deleded successfully');
         return response()->json([
             'status' => true,

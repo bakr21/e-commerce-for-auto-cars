@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\admin;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -28,7 +28,7 @@ class ProfileController extends Controller
 
         $user = User::find(Auth::id());
         if ($validator->passes()) {
-            
+
             if (!Hash::check($request->old_password, $user->password)) {
                 session()->flash('error', 'Your old password is incorrect, please try again.');
                 return response()->json([
@@ -46,7 +46,7 @@ class ProfileController extends Controller
                 'status' => true,
             ]);
 
-            
+
         } else {
             return response()->json([
                 'status' => false,
