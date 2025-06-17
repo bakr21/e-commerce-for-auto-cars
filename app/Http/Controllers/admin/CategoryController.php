@@ -15,7 +15,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::paginate(10);
+        $categories = Category::latest()->get();
         return view('admin.categories.index', compact('categories'));
     }
 
@@ -34,32 +34,30 @@ class CategoryController extends Controller
     {
         $validated = $request->validated();
 
-        Category::create([
-            'name' => [
-                'en' => $request->name_en,
-                'ar' => $request->name_ar
-            ],
-            'slug' => $request->slug,
-            'description' => [
-                'en' => $request->description_en,
-                'ar' => $request->description_ar
-            ],
-            'is_showing' => $request->is_showing ? '1' : '0',
-            'is_popular' => $request->is_popular ? '1' : '0',
-            'image' => $request->file('image')->store('public/categories'),
-            'meta_title' => [
-                'en' => $request->meta_title_en,
-                'ar' => $request->meta_title_ar
-            ],
-            'meta_description' => [
-                'en' => $request->meta_description_en,
-                'ar' => $request->meta_description_ar
-            ],
-            'meta_keywords' => [
-                'en' => $request->meta_keywords_en,
-                'ar' => $request->meta_keywords_ar
-            ],
-        ]);
+        $category = new Category();
+        $category->name = ['ar'=> $request->name_ar , 'en' => $request->name_en];
+        $category->slug = $request->slug;
+        $category->description = [
+            'en' => $request->description_en,
+            'ar' => $request->description_ar
+        ];
+        $category->is_showing = $request->is_showing ? '1' : '0';
+        $category->is_popular = $request->is_popular ? '1' : '0';
+        $category->image = $request->file('image')->store('public/categories');
+        $category->meta_title = [
+            'en' => $request->meta_title_en,
+            'ar' => $request->meta_title_ar
+        ];
+        $category->meta_description = [
+            'en' => $request->meta_description_en,
+            'ar' => $request->meta_description_ar
+        ];
+        $category->meta_keywords = [
+            'en' => $request->meta_keywords_en,
+            'ar' => $request->meta_keywords_ar
+        ];
+        $category->save();
+
 
         flash()->success('Category added successfully', 'Success', ['timeOut' => 3000]);
 
@@ -90,49 +88,58 @@ class CategoryController extends Controller
      */
     public function update(UpdateCategoryRequest $request, string $id)
     {
-        $category = Category::find($id);
+        $category = Category::findOrFail($id);
+
         if ($request->hasFile('image')) {
             Storage::delete($category->image);
-            $image = $request->file('image')->store('public/categories');
-            $category->image = $image;
+            $category->image = $request->file('image')->store('public/categories');
         }
-        $category->update([
-            'name' => [
-                'en' => $request->name_en,
-                'ar' => $request->name_ar
-            ],
-            'slug' => $request->slug,
-            'description' => [
-                'en' => $request->description_en,
-                'ar' => $request->description_ar
-            ],
-            'is_showing' => $request->is_showing ? '1' : '0',
-            'is_popular' => $request->is_popular ? '1' : '0',
-            'image' => $category->image,
-            'meta_title' => [
-                'en' => $request->meta_title_en,
-                'ar' => $request->meta_title_ar
-            ],
-            'meta_description' => [
-                'en' => $request->meta_description_en,
-                'ar' => $request->meta_description_ar
-            ],
-            'meta_keywords' => [
-                'en' => $request->meta_keywords_en,
-                'ar' => $request->meta_keywords_ar
-            ],
-        ]);
 
-        flash()->success('Update category is done ', 'Success Update', ['timeOut' => 20000]);
+        $category->name = [
+            'en' => $request->name_en,
+            'ar' => $request->name_ar
+        ];
+        $category->slug = $request->slug;
+        $category->description = [
+            'en' => $request->description_en,
+            'ar' => $request->description_ar
+        ];
+        $category->is_showing = $request->is_showing ? '1' : '0';
+        $category->is_popular = $request->is_popular ? '1' : '0';
+        $category->meta_title = [
+            'en' => $request->meta_title_en,
+            'ar' => $request->meta_title_ar
+        ];
+        $category->meta_description = [
+            'en' => $request->meta_description_en,
+            'ar' => $request->meta_description_ar
+        ];
+        $category->meta_keywords = [
+            'en' => $request->meta_keywords_en,
+            'ar' => $request->meta_keywords_ar
+        ];
+
+        $category->save();
+
+        flash()->success('Update category is done', 'Success Update', ['timeOut' => 20000]);
         return redirect()->route('categories.index');
     }
+
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
-    {
-        Category::where("id", $id)->delete();
-        return redirect()->route('categories.index');
+{
+    $category = Category::findOrFail($id);
+
+    if ($category->products()->count() > 0) {
+        return redirect()->route('categories.index')->with('error', 'لا يمكن حذف التصنيف لأنه مرتبط بمنتجات.');
     }
+
+    $category->delete();
+    flash()->success('تم حذف التصنيف بنجاح.');
+    return redirect()->route('categories.index');
+}
+
 }
