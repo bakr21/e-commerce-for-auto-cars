@@ -45,11 +45,11 @@
                                     class="form-control">
                                 <p></p>
                             </div>
-    
+
                             <div class="mb-3">
                                 <label for="phone">Address</label>
                                 <textarea name="address" id="address" class="form-control" cols="30" rows="5"
-                                    placeholder="Enter Your Address">{{ $user->addres }}</textarea>
+                                    placeholder="Enter Your Address">{{ $user->address }}</textarea>
                                 <p></p>
                             </div>
 
@@ -57,9 +57,18 @@
                                 <label >Region</label>
                                 <select class="form-control" name="region" id="region">
                                     <option value="" {{ is_null($user->region) ? 'selected' : '' }}>Select Region - Egypt</option>
-                                    <option value="alex" {{ $user->region == 'alex' ? 'selected' : '' }}>Alexandria - Egypt</option>
-                                    <option value="damn" {{ $user->region == 'damn' ? 'selected' : '' }}>Dam - Egypt</option>
-                                    <option value="dand" {{ $user->region == 'dand' ? 'selected' : '' }}>Dandara - Egypt</option>
+                                    @if(isset($regions))
+                                        @foreach($regions as $region)
+                                            <option value="{{ $region->code }}" {{ $user->region == $region->code ? 'selected' : '' }}>
+                                                {{ app()->getLocale() == 'ar' ? $region->name_ar : $region->name }} - Egypt
+                                            </option>
+                                        @endforeach
+                                    @else
+                                        {{-- Fallback options if regions are not loaded --}}
+                                        <option value="cairo">Cairo - Egypt</option>
+                                        <option value="giza">Giza - Egypt</option>
+                                        <option value="alex">Alexandria - Egypt</option>
+                                    @endif
                                 </select>
                                 <p></p>
                             </div>
@@ -83,31 +92,31 @@
                         <div class="row">
                             <div class="col-md-12 form-group">
                                 <label>Name Full</label>
-                                <input class="form-control" name="billing_name" id="billing_name" type="text" 
+                                <input class="form-control" name="billing_name" id="billing_name" type="text"
                                     placeholder="John" value="{{ (!empty($customerAddress)) ? $customerAddress->name : '' }}">
                                 <p></p>
                             </div>
                             <div class="col-md-6 form-group">
                                 <label>E-mail</label>
-                                <input class="form-control" name="billing_email" id="billing_email" type="text" 
+                                <input class="form-control" name="billing_email" id="billing_email" type="text"
                                     placeholder="example@email.com" value="{{ (!empty($customerAddress)) ? $customerAddress->email : '' }}">
                                     <p></p>
                             </div>
                             <div class="col-md-6 form-group">
                                 <label>Mobile No</label>
-                                <input class="form-control" name="billing_phone" id="billing_phone" type="text" 
+                                <input class="form-control" name="billing_phone" id="billing_phone" type="text"
                                     placeholder="+20 123 4567 8910" value="{{ (!empty($customerAddress)) ? $customerAddress->mobile : '' }}">
                                 <p></p>
                             </div>
                             <div class="col-md-12 form-group">
                                 <label>Address Line 1</label>
-                                <input class="form-control" name="billing_address" id="billing_address" type="text" 
+                                <input class="form-control" name="billing_address" id="billing_address" type="text"
                                     placeholder="123 Street" value="{{ (!empty($customerAddress)) ? $customerAddress->address : '' }}">
                                     <p></p>
                             </div>
                             <div class="col-md-12 form-group">
                                 <label>Address Line 2</label>
-                                <input class="form-control" name="address2" id="address2" type="text" 
+                                <input class="form-control" name="address2" id="address2" type="text"
                                     placeholder="123 Street" value="{{ (!empty($customerAddress)) ? $customerAddress->address2 : '' }}">
                             </div>
                             <div class="col-md-6 form-group">
@@ -125,19 +134,19 @@
                             </div>
                             <div class="col-md-6 form-group">
                                 <label>City</label>
-                                <input class="form-control" name="city" id="city" type="text" 
+                                <input class="form-control" name="city" id="city" type="text"
                                     placeholder="New York" value="{{ (!empty($customerAddress)) ? $customerAddress->city : '' }}">
                                 <p></p>
                             </div>
                             <div class="col-md-6 form-group">
                                 <label>State</label>
-                                <input class="form-control" name="state" id="state" type="text" 
+                                <input class="form-control" name="state" id="state" type="text"
                                     placeholder="New York" value="{{ (!empty($customerAddress)) ? $customerAddress->state : '' }}">
                                 <p></p>
                             </div>
                             <div class="col-md-6 form-group">
                                 <label>ZIP Code</label>
-                                <input class="form-control" name="zip" id="zip" type="text" 
+                                <input class="form-control" name="zip" id="zip" type="text"
                                     placeholder="123" value="{{ (!empty($customerAddress)) ? $customerAddress->zip : '' }}">
                                 <p></p>
                             </div>
@@ -178,7 +187,7 @@
                         timer: 5000,
                         timerProgressBar: true,
                     }).then(() => {
-                        location.reload(); 
+                        location.reload();
                     });
                     } else {
                         handleErrors(response.errors);
@@ -207,7 +216,7 @@
                             timer: 5000,
                             timerProgressBar: true,
                         }).then(() => {
-                            location.reload(); 
+                            location.reload();
                         });
 
                     } else {

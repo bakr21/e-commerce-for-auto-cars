@@ -49,4 +49,12 @@ class User extends Authenticatable implements MustVerifyEmail
             get: fn ($value) => ['user','admin'][$value],
         );
     }
+
+    /**
+     * Get the country that owns the user.
+     */
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
+    }
 }

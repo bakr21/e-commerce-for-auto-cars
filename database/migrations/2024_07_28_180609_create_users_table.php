@@ -15,10 +15,14 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('phone')->nullable();
             $table->foreignId('country_id')->constrained()->onDelete('cascade');
+            $table->text('address')->nullable();
+            $table->string('region')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->boolean('type')->default(false);
+            $table->integer('status')->default(1);
             $table->rememberToken();
             $table->timestamps();
         });

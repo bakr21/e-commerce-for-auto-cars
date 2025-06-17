@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
         // تشغيل السيدرز بالترتيب الصحيح
         $this->call([
             CountrySeeder::class,
+            EgyptRegionSeeder::class,
             SiteSettingSeeder::class,
             CategorySeeder::class,
             BrandSeeder::class,

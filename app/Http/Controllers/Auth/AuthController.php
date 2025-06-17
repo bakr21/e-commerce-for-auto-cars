@@ -10,6 +10,7 @@ use App\Http\Requests\Admin\StoreLoginRequest;
 use App\Jobs\SendWelcomeEmailJob;
 use App\Jobs\SendPasswordResetLinkJob;
 use App\Models\Country;
+use App\Models\EgyptRegion;
 use App\Models\CustomerAddress;
 use App\Models\Order;
 use App\Models\Orderitem;
@@ -47,18 +48,22 @@ class AuthController extends Controller
 
     public function register()
     {
-    return view('auth.register');
+        $regions = EgyptRegion::all();
+        return view('auth.register', compact('regions'));
     }
 
 
     public function registerSave(StoreRegisterRequest $request) {
+        // Get Egypt as default country (you can modify this logic as needed)
+        $egypt = Country::where('code', 'EG')->first();
 
         $user = User::create([
             'name'      => $request->name,
             'email'     => $request->email,
             'password'  => Hash::make($request->password),
-            'addres'   => $request->address,
+            'address'   => $request->address,
             'region'    => $request->region,
+            'country_id' => $egypt ? $egypt->id : 1, // fallback to ID 1 if Egypt not found
             'type'      => "0"
         ]);
 
@@ -128,9 +133,10 @@ class AuthController extends Controller
 
         $user = User::where('id',$userID)->first();
         $countries = Country::orderBy('name', 'ASC')->get();
+        $regions = EgyptRegion::all();
         $customerAddress = CustomerAddress::where('user_id',$user->id)->first();
 
-        return view('website.account.profile' , compact('user','countries' , 'customerAddress'));
+        return view('website.account.profile' , compact('user','countries', 'regions', 'customerAddress'));
     }
 
     public function updateprofile(Request $request){
@@ -148,7 +154,7 @@ class AuthController extends Controller
             $user->name = $request->name;
             $user->email = $request->email;
             $user->phone = $request->phone;
-            $user->addres = $request->address;
+            $user->address = $request->address;
             $user->region = $request->region;
             $user->save();
 
