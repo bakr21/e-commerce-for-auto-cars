@@ -1,0 +1,144 @@
+/* Multilingual Form Styles */
+
+/* Arabic input styling */
+input[dir="rtl"], 
+textarea[dir="rtl"] {
+    text-align: right;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Language labels */
+.form-group label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: block;
+}
+
+/* Language indicators */
+.lang-indicator {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: bold;
+    margin-left: 8px;
+}
+
+.lang-indicator.en {
+    background-color: #e3f2fd;
+    color: #1976d2;
+}
+
+.lang-indicator.ar {
+    background-color: #f3e5f5;
+    color: #7b1fa2;
+}
+
+/* Form sections */
+.multilingual-section {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    background-color: #fafafa;
+}
+
+.multilingual-section h5 {
+    color: #333;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+/* Input focus states */
+input[name*="_en"]:focus,
+textarea[name*="_en"]:focus {
+    border-color: #1976d2;
+    box-shadow: 0 0 0 0.2rem rgba(25, 118, 210, 0.25);
+}
+
+input[name*="_ar"]:focus,
+textarea[name*="_ar"]:focus {
+    border-color: #7b1fa2;
+    box-shadow: 0 0 0 0.2rem rgba(123, 31, 162, 0.25);
+}
+
+/* Table styling for multilingual content */
+.multilingual-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.multilingual-table td[dir="rtl"] {
+    text-align: right;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Badge styling */
+.badge.bg-success {
+    background-color: #28a745 !important;
+}
+
+.badge.bg-danger {
+    background-color: #dc3545 !important;
+}
+
+.badge.bg-secondary {
+    background-color: #6c757d !important;
+}
+
+/* Code styling for slugs */
+code {
+    background-color: #f8f9fa;
+    color: #e83e8c;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.875em;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .multilingual-section {
+        padding: 15px;
+    }
+    
+    .col-lg-6 {
+        margin-bottom: 15px;
+    }
+}
+
+/* Form validation styling */
+.is-invalid {
+    border-color: #dc3545;
+}
+
+.text-danger {
+    color: #dc3545 !important;
+    font-size: 0.875em;
+    margin-top: 5px;
+}
+
+/* Success messages */
+.alert-success {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    color: #155724;
+}
+
+/* Loading states */
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Improved spacing */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.card-title {
+    color: #495057;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}

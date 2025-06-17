@@ -32,21 +32,36 @@ class CategoryController extends Controller
      */
     public function store(StoreCategoryRequest $request)
     {
-
         $validated = $request->validated();
+
         Category::create([
-            'name' => $request->name,
+            'name' => [
+                'en' => $request->name_en,
+                'ar' => $request->name_ar
+            ],
             'slug' => $request->slug,
-            'description' => $request->description,
+            'description' => [
+                'en' => $request->description_en,
+                'ar' => $request->description_ar
+            ],
             'is_showing' => $request->is_showing ? '1' : '0',
             'is_popular' => $request->is_popular ? '1' : '0',
             'image' => $request->file('image')->store('public/categories'),
-            'meta_title' => $request->meta_title,
-            'meta_description' => $request->meta_description,
-            'meta_keywords' => $request->meta_keywords,
+            'meta_title' => [
+                'en' => $request->meta_title_en,
+                'ar' => $request->meta_title_ar
+            ],
+            'meta_description' => [
+                'en' => $request->meta_description_en,
+                'ar' => $request->meta_description_ar
+            ],
+            'meta_keywords' => [
+                'en' => $request->meta_keywords_en,
+                'ar' => $request->meta_keywords_ar
+            ],
         ]);
 
-        flash()->success('Add category is done ', 'Success Add', ['timeOut' => 20000]);
+        flash()->success('Category added successfully', 'Success', ['timeOut' => 3000]);
 
         return redirect()->route('categories.index');
     }
@@ -82,15 +97,30 @@ class CategoryController extends Controller
             $category->image = $image;
         }
         $category->update([
-            'name' => $request->name,
+            'name' => [
+                'en' => $request->name_en,
+                'ar' => $request->name_ar
+            ],
             'slug' => $request->slug,
-            'description' => $request->description,
+            'description' => [
+                'en' => $request->description_en,
+                'ar' => $request->description_ar
+            ],
             'is_showing' => $request->is_showing ? '1' : '0',
             'is_popular' => $request->is_popular ? '1' : '0',
             'image' => $category->image,
-            'meta_title' => $request->meta_title,
-            'meta_description' => $request->meta_description,
-            'meta_keywords' => $request->meta_keywords,
+            'meta_title' => [
+                'en' => $request->meta_title_en,
+                'ar' => $request->meta_title_ar
+            ],
+            'meta_description' => [
+                'en' => $request->meta_description_en,
+                'ar' => $request->meta_description_ar
+            ],
+            'meta_keywords' => [
+                'en' => $request->meta_keywords_en,
+                'ar' => $request->meta_keywords_ar
+            ],
         ]);
 
         flash()->success('Update category is done ', 'Success Update', ['timeOut' => 20000]);

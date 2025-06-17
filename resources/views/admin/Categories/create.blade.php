@@ -13,31 +13,42 @@
         <div class="card-body">
             <form action="{{ route('categories.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                <h5 class="card-title">Category Information</h5>
+                <h5 class="card-title">
+                    <i class="fas fa-info-circle"></i> Category Information
+                </h5>
                 <div class="row">
                     <div class="col-lg-6 col-sm-6 col-12">
                         <div class="form-group">
-                            <label class="form-label">Category Name <span class="text-danger">&#9913;</span></label>
-                            <input type="text" name="name" class="form-control" placeholder="Name" required>
-                            @error('name')
+                            <label class="form-label">Category Name (English) <span class="text-danger">&#9913;</span></label>
+                            <input type="text" name="name_en" class="form-control" placeholder="Category Name in English" value="{{ old('name_en') }}" required>
+                            @error('name_en')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
                     </div>
                     <div class="col-lg-6 col-sm-6 col-12">
                         <div class="form-group">
-                            <label>Category Code</label>
-                            <input type="text" name="code" class="form-control" placeholder="Code">
-                            @error('code')
+                            <label class="form-label">Category Name (Arabic) <span class="text-danger">&#9913;</span></label>
+                            <input type="text" name="name_ar" class="form-control" placeholder="اسم التصنيف بالعربية" value="{{ old('name_ar') }}" required dir="rtl">
+                            @error('name_ar')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
                     </div>
                     <div class="col-lg-12">
                         <div class="form-group">
-                            <label class="form-label">Description</label>
-                            <div class="form-control" name="description" id="summernote" value="{{ old('description') }}" required>Hello Summernote</div>
-                            @error('description')
+                            <label class="form-label">Description (English) <span class="text-danger">&#9913;</span></label>
+                            <textarea name="description_en" class="form-control" rows="4" placeholder="Category description in English" required>{{ old('description_en') }}</textarea>
+                            @error('description_en')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label class="form-label">Description (Arabic) <span class="text-danger">&#9913;</span></label>
+                            <textarea name="description_ar" class="form-control" rows="4" placeholder="وصف التصنيف بالعربية" required dir="rtl">{{ old('description_ar') }}</textarea>
+                            @error('description_ar')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
@@ -77,46 +88,71 @@
                             @enderror
                         </div>
                     </div>
-                    <h5 class="card-title">SEO Category</h5>
+                    <h5 class="card-title">
+                        <i class="fas fa-search"></i> SEO Category
+                    </h5>
                     <div class="row">
-                        <div class="col-xl-6">
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label">Slug <span class="text-danger">&#9913;</span></label>
-                                <div class="col-lg-9">
-                                    <input type="text" name="slug" class="form-control" placeholder="Slug" required>
-                                    @error('slug')
-                                    <span class="text-danger">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label">Meta Title <span class="text-danger">&#9913;</span></label>
-                                <div class="col-lg-9">
-                                    <input type="text" name="meta_title" class="form-control" placeholder="Meta Title" required>
-                                    @error('meta_title')
-                                    <span class="text-danger">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label">Meta Description <span class="text-danger">&#9913;</span></label>
-                                <div class="col-lg-9">
-                                    <textarea name="meta_description" class="form-control" rows="2" placeholder="Meta Description" required></textarea>
-                                    @error('meta_description')
-                                    <span class="text-danger">{{ $message }}</span>
-                                    @enderror
-                                </div>
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label>Slug <span class="text-danger">&#9913;</span></label>
+                                <input type="text" name="slug" class="form-control" placeholder="category-slug" value="{{ old('slug') }}" required>
+                                @error('slug')
+                                <span class="text-danger">{{ $message }}</span>
+                                @enderror
                             </div>
                         </div>
-                        <div class="col-xl-6">
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label">Meta Keywords <span class="text-danger">&#9913;</span></label>
-                                <div class="col-lg-9">
-                                    <textarea name="meta_keywords" class="form-control" rows="5" placeholder="Meta Keywords"></textarea>
-                                    @error('meta_keywords')
-                                    <span class="text-danger">{{ $message }}</span>
-                                    @enderror
-                                </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Meta Title (English) <span class="text-danger">&#9913;</span></label>
+                                <input type="text" name="meta_title_en" class="form-control" placeholder="Meta Title in English" value="{{ old('meta_title_en') }}" required>
+                                @error('meta_title_en')
+                                <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Meta Title (Arabic) <span class="text-danger">&#9913;</span></label>
+                                <input type="text" name="meta_title_ar" class="form-control" placeholder="العنوان التعريفي بالعربية" value="{{ old('meta_title_ar') }}" required dir="rtl">
+                                @error('meta_title_ar')
+                                <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Meta Description (English) <span class="text-danger">&#9913;</span></label>
+                                <textarea name="meta_description_en" class="form-control" rows="3" placeholder="Meta Description in English" required>{{ old('meta_description_en') }}</textarea>
+                                @error('meta_description_en')
+                                <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Meta Description (Arabic) <span class="text-danger">&#9913;</span></label>
+                                <textarea name="meta_description_ar" class="form-control" rows="3" placeholder="الوصف التعريفي بالعربية" required dir="rtl">{{ old('meta_description_ar') }}</textarea>
+                                @error('meta_description_ar')
+                                <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Meta Keywords (English) <span class="text-danger">&#9913;</span></label>
+                                <textarea name="meta_keywords_en" class="form-control" rows="3" placeholder="keyword1, keyword2, keyword3" required>{{ old('meta_keywords_en') }}</textarea>
+                                @error('meta_keywords_en')
+                                <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Meta Keywords (Arabic) <span class="text-danger">&#9913;</span></label>
+                                <textarea name="meta_keywords_ar" class="form-control" rows="3" placeholder="كلمة مفتاحية، كلمة أخرى، كلمة ثالثة" required dir="rtl">{{ old('meta_keywords_ar') }}</textarea>
+                                @error('meta_keywords_ar')
+                                <span class="text-danger">{{ $message }}</span>
+                                @enderror
                             </div>
                         </div>
                     </div>

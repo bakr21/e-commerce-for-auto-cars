@@ -48,45 +48,51 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Category name</th>
-                            <th>is_showing</th>
-                            <th>is_popular</th>
-                            <th>slug</th>
-                            <th>Action</th>
+                            <th><i class="fas fa-image"></i> Image</th>
+                            <th><i class="fas fa-flag"></i> Name (EN)</th>
+                            <th><i class="fas fa-flag"></i> Name (AR)</th>
+                            <th><i class="fas fa-eye"></i> Showing</th>
+                            <th><i class="fas fa-star"></i> Popular</th>
+                            <th><i class="fas fa-link"></i> Slug</th>
+                            <th><i class="fas fa-cogs"></i> Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse ($categories as $category)
                         <tr>
-
                             <th scope="row">{{ $loop->iteration }}</th>
                             <td class="productimgname">
                                 <a class="product-img">
-                                    <img width="50" src="{{ Storage::url($category->image) }}" alt="{{ $category->name }}"
+                                    <img width="50" src="{{ Storage::url($category->image) }}" alt="{{ $category->getTranslation('name', 'en') }}"
                                     class="img-thumbnail">
                                 </a>
-                                <a>{{ $category->name }}</a>
+                            </td>
+                            <td>
+                                <strong>{{ $category->getTranslation('name', 'en') ?? 'N/A' }}</strong>
+                            </td>
+                            <td dir="rtl">
+                                <strong>{{ $category->getTranslation('name', 'ar') ?? 'غير متوفر' }}</strong>
                             </td>
                             <td>
                                 @if($category->is_showing == 1)
-                                <span class="badge bg-success">show</span>
+                                <span class="badge bg-success">Show</span>
                                 @else
-                                <span class="badge bg-danger">don't show</span>
+                                <span class="badge bg-danger">Hidden</span>
                                 @endif
                             </td>
                             <td>
                                 @if($category->is_popular == 1)
-                                <span class="badge bg-success">popular</span>
+                                <span class="badge bg-success">Popular</span>
                                 @else
-                                <span class="badge bg-danger">don't popular</span>
+                                <span class="badge bg-secondary">Normal</span>
                                 @endif
                             </td>
-                            <td>{{ $category->slug }}</td>
+                            <td><code>{{ $category->slug }}</code></td>
                             <td>
-                                <a class="me-3" href="{{route('categories.show',$category->id)}}">
+                                <a class="me-3" href="{{route('categories.show',$category->id)}}" title="View">
                                     <img src="{{asset('admin/assets/img/icons/eye.svg')}}" alt="img">
                                 </a>
-                                <a class="me-3" href="{{route('categories.edit',$category->id)}}">
+                                <a class="me-3" href="{{route('categories.edit',$category->id)}}" title="Edit">
                                     <img src="{{asset('admin/assets/img/icons/edit.svg')}}" alt="img">
                                 </a>
 
@@ -96,7 +102,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="6" class="text-center">No Products Yet!</td>
+                            <td colspan="8" class="text-center">No Categories Yet!</td>
                         </tr>
                         @endforelse
                     </tbody>
